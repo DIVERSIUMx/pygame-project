@@ -9,14 +9,20 @@ fps = 60
 def test(self: MainBoard):
     """В эту функцию пихать все для тестов"""
     self.board[4][4] = [items.Moris(self)]
-    self.rules[items.Moris].add_rule("you")
+    self.rules[items.Moris].you = True
+    self.rules[items.Moris].weak = True
 
     self.board[6][5] = [items.Box(self)]
     self.board[4][5] = [items.Box(self)]
     self.board[5][5] = [items.Box(self)]
-    self.rules[items.Box].set_colide_type(50)
+    self.rules[items.Box].set_colide_type(90)
+    self.rules[items.Box].weak = True
 
     self.board[5][8] = [items.Wall(self)]
+    # self.rules[items.Wall].set_colide_type(100)
+
+    self.board[5][10] = [items.Water(self)]
+    # self.rules[items.Water].sink = True
     self.rules[items.Wall].set_colide_type(100)
     print(self.rules)
 

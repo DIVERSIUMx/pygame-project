@@ -6,15 +6,18 @@ class Rule:
     def __init__(self):
         self.rules = []
         self.colide_type = 0
+        self.weak = False
+        self.sink = False
+        self.you = False
 
     def add_rule(self, rule_name: str):
         self.rules.append(rule_name)
 
-    def set_colide_type(self, type):
-        """0 - пусто
-        50 - push
-        100 - stop"""
-        self.colide_type = max(self.colide_type, type)
+    def set_colide_type(self, new):
+        if self.colide_type < 50:
+            self.colide_type = max(self.colide_type, new)
+        elif new > 50:
+            self.colide_type = min(self.colide_type, new)
 
 
 class MainBoard:
@@ -74,11 +77,15 @@ class MainBoard:
             for x, cell in enumerate(row):
                 for item in cell:
                     print(len(self.new_board[y][x]))
-                    if item["you"]:
+                    if item.rule.you:
                         print("help")
-                        item.try_step(
+                        colide_res = item.try_step(
                             (x, y), (x + you_go_delta[0], y + you_go_delta[1])
                         )
+                        if item.rule.weak and not colide_res:
+                            item.step_and_die(
+                                (x, y), (x + you_go_delta[0], y + you_go_delta[1])
+                            )
 
         self.board = self.new_board
 
@@ -96,6 +103,7 @@ class Item(object):
             self.rule = self.board.rules[type(self)]
 
     def try_step(self, old, new):
+        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
         x = new[0]
         y = new[1]
 
@@ -103,24 +111,98 @@ class Item(object):
         y1 = old[1]
 
         if 0 <= x < self.board.width and 0 <= y < self.board.height:
-            items_new = sorted(
-                self.board.board[y][x], key=lambda f: f.rule.colide_type, reverse=True
-            )
-            for item in items_new:
-                if item.rule.colide_type == 100:
-                    return False
-                elif item.rule.colide_type >= 50:
-                    if not item.try_step(new, (2 * x - x1, 2 * y - y1)):
-                        return False
-            else:
+            if len(self.board.board[y][x]) == 0:
                 self.step(old, new)
                 return True
+            elif len(self.board.board[y][x]) > 1:
+                items_new = sorted(
+                    self.board.board[y][x],
+                    key=lambda f: f.rule.colide_type,
+                    reverse=True,
+                )
+                for item in items_new:
+                    if item.rule.colide_type == 100:
+                        return False
+                    elif item.rule.colide_type >= 90:  #
+                        colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
+                        if not colide_res and item.rule.weak:
+                            item.step_and_die(new, (2 * x - x1, 2 * y - y1))
+                            self.step(old, new)
+                            return True
+                        elif not colide_res:
+                            return False
+                        else:
+                            self.step(old, new)
+                            return True
+                    elif self.rule.you and item.rule.colide_type == 20:
+                        self.step_and_die(old, new)
+                    elif self.rule.you and item.rules.colide_type == 1:
+                        self.step_and_win(old, new)
+                    elif self.rule.weak and item.rule.colide_type == 0:
+                        self.step_and_die(old, new)
+                        return True
+                else:
+                    self.step(old, new)
+                    return True
+            else:
+                item = self.board.board[y][x][0]
+
+                if item.rule.colide_type == 100:
+                    return False
+                elif item.rule.colide_type >= 90:  #
+                    colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
+                    if not colide_res and item.rule.weak:
+                        item.step_and_die(new, (2 * x - x1, 2 * y - y1))
+                        self.step(old, new)
+                        return True
+                    elif not colide_res:
+                        return False
+                    else:
+                        self.step(old, new)
+                        return True
+                elif item.rule.sink:
+                    self.step_and_clear(old, new)
+                    return True
+                elif item.rule.weak:
+                    self.clear_and_step(old, new)
+                    return True
+                elif self.rule.weak and item.rule.colide_type == 0:
+                    self.step_and_die(old, new)
+                    return True
+                else:
+                    self.step(old, new)
+                    return True
+
         return False
 
     def step(self, old, new):
         print(0)
+        if self.rule.sink and self.board.new_board[new[1]][new[0]] != []:
+            self.board.new_board[new[1]][new[0]] = []
+            self.board.new_board[old[1]][old[0]].remove(self)
+            return
         self.board.new_board[new[1]][new[0]].append(self)
         self.board.new_board[old[1]][old[0]].remove(self)
+
+    def step_and_die(self, old, new):
+        self.board.new_board[old[1]][old[0]].remove(self)
+
+    def step_and_clear(self, old, new):
+        self.board.new_board[old[1]][old[0]].remove(self)
+        self.board.new_board[new[1]][new[0]] = []
+
+    def clear_and_step(self, old, new):
+        self.board.new_board[old[1]][old[0]].remove(self)
+        self.board.new_board[new[1]][new[0]] = [self]
+
+    def step_and_win(self, old, new):
+        if self.rule.sink and self.board.new_board[new[1]][new[0]] != []:
+            self.board.new_board[new[1]][new[0]] = []
+            self.board.new_board[old[1]][old[0]].remove(self)
+            return
+        self.board.new_board[new[1]][new[0]].append(self)
+        self.board.new_board[old[1]][old[0]].remove(self)
+        print("YOU WIN")
 
     def render(self, surface, rect):
         pygame.draw.rect(surface, self.color, rect)

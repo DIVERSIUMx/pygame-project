@@ -18,3 +18,9 @@ class Wall(Item):
     name = "Wall"
     color = (50, 50, 255)
     rule = Rule()
+
+
+class Water(Item):
+    name = "Water"
+    color = (0, 0, 255)
+    rule = Rule()
