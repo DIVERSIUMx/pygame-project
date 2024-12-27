@@ -1,10 +1,9 @@
-# На счет имени, пока назвал так, потом поменяем FIXME
+# На счет имени пока назвал так, потом поменяем FIXME
 import pygame
-import copy
 
 
 class Rule:
-    def __init__(self, cto):
+    def __init__(self):
         self.rules = []
         self.colide_type = 0
 
@@ -13,13 +12,13 @@ class Rule:
 
     def set_colide_type(self, type):
         """0 - пусто
-        10 - stop
-        100 - push"""
+        50 - push
+        100 - stop"""
         self.colide_type = max(self.colide_type, type)
 
 
 class MainBoard:
-    rules: dict[str, Rule] = dict()
+    rules: dict[type, Rule] = dict()
 
     def __init__(self, width: int, height: int, cell_size: int):
         self.width = width
@@ -30,8 +29,6 @@ class MainBoard:
 
         self.board = [[list()] * width for _ in range(height)]
         print(self.board)
-
-        self.test()
 
     def get_screen_size(self):
         return self.width * self.cell_size + (
@@ -50,6 +47,7 @@ class MainBoard:
                 pygame.draw.rect(surface, (40, 40, 50), rect, 3)
                 if cell is not None:
                     for item in cell:
+                        print(type(item))
                         item.render(surface, rect)
 
     def you_go(self, event_key):
@@ -84,30 +82,18 @@ class MainBoard:
 
         self.board = self.new_board
 
-    def test(self):
-        """В эту функцию пихать все для тестов"""
-        self.board[4][4] = [Item("moris", self)]
-        self.rules["moris"].add_rule("you")
 
-        self.board[6][5] = [Item("box", self)]
-        self.board[4][5] = [Item("box", self)]
-        self.board[5][5] = [Item("box", self)]
-        self.rules["box"].set_colide_type(50)
+class Item(object):
+    color: tuple[int, int, int] = (255, 255, 255)
+    name: str
 
-        self.board[5][8] = [Item("wall", self)]
-        self.rules["wall"].set_colide_type(100)
-        print(self.rules)
-
-
-class Item:
-    def __init__(self, name, board: MainBoard):
-        self.name = name
+    def __init__(self, board: MainBoard):
         self.board = board
-        if self.name not in self.board.rules.keys():
-            self.rule = Rule(name)
-            self.board.rules[name] = self.rule
+        if type(self) not in self.board.rules.keys():
+            self.rule = Rule()
+            self.board.rules[type(self)] = self.rule
         else:
-            self.rule = self.board.rules[name]
+            self.rule = self.board.rules[type(self)]
 
     def try_step(self, old, new):
         x = new[0]
@@ -117,7 +103,6 @@ class Item:
         y1 = old[1]
 
         if 0 <= x < self.board.width and 0 <= y < self.board.height:
-            print("tut norm")
             items_new = sorted(
                 self.board.board[y][x], key=lambda f: f.rule.colide_type, reverse=True
             )
@@ -134,28 +119,25 @@ class Item:
 
     def step(self, old, new):
         print(0)
-        # print(self.board.new_board[new[1]][new[0]])
-        # print(self.board.new_board[old[1]][old[0]])
         self.board.new_board[new[1]][new[0]].append(self)
         self.board.new_board[old[1]][old[0]].remove(self)
-        # print(self.board.new_board)
 
     def render(self, surface, rect):
-        pygame.draw.rect(surface, (255, 0, 0), rect)
+        pygame.draw.rect(surface, self.color, rect)
         text = pygame.font.Font(None, self.board.cell_size // 2).render(
-            self.name, False, (0, 0, 0)
+            self.name, True, (0, 0, 0)
         )
         surface.blit(text, rect[:2])
-        self.board.rules
+        # self.board.rules
 
     def __getitem__(self, key):
         return key in self.rule.rules
 
-    def __repr__(self):
-        return self.name
-
-    def __eq__(self, other):
-        return self.name == other.name
-
-    def __hash__(self):
-        return hash(self.name)
+    # def __repr__(self):
+    #     return self.name
+    #
+    # def __eq__(self, other):
+    #     return self.name == other.name
+    #
+    # def __hash__(self):
+    #     return hash(self.name)
