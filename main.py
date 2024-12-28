@@ -19,7 +19,7 @@ def test(self: MainBoard):
     self.rules[items.Box].weak = True
 
     self.board[5][8] = [items.Wall(self)]
-    # self.rules[items.Wall].set_colide_type(100)
+    self.rules[items.Wall].set_colide_type(100)
 
     self.board[5][10] = [items.Water(self)]
     # self.rules[items.Water].sink = True

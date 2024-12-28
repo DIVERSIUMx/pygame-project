@@ -21,6 +21,7 @@ class Rule:
 
 
 class MainBoard:
+    intereaction: list = []  # твой список  WARN:
     rules: dict[type, Rule] = dict()
 
     def __init__(self, width: int, height: int, cell_size: int):
