@@ -32,11 +32,11 @@ class MainBoard:
         self.left = cell_size // 2
 
         self.board = [[list()] * width for _ in range(height)]
-        '''print(self.board)'''
+        """print(self.board)"""
 
     def get_screen_size(self):
         return self.width * self.cell_size + (
-                2 * self.left
+            2 * self.left
         ), self.height * self.cell_size + (2 * self.top)
 
     def render(self, surface):
@@ -70,21 +70,22 @@ class MainBoard:
 
     def move(self, you_go_delta):
         from Rules_and_blocks import search_for_rules
+
         """Функция для обработки хода"""
         self.intereaction = list()
         self.new_board = [[[c for c in i] for i in r] for r in self.board]
-        '''print(len(self.new_board[0]), self.width)
-        print(len(self.new_board), self.height)'''
+        """print(len(self.new_board[0]), self.width)
+        print(len(self.new_board), self.height)"""
         for y, row in enumerate(self.board):
             for x, cell in enumerate(row):
                 for item in cell:
-                    '''print(len(self.new_board[y][x]))'''
+                    """print(len(self.new_board[y][x]))"""
                     if item.rule.you:
-                        '''print("help")'''
+                        """print("help")"""
                         colide_res = item.try_step(
                             (x, y), (x + you_go_delta[0], y + you_go_delta[1])
                         )
-                        if item.rule.weak and not colide_res:
+                        if item.weak and not colide_res:
                             item.step_and_die(
                                 (x, y), (x + you_go_delta[0], y + you_go_delta[1])
                             )
@@ -106,7 +107,7 @@ class Item(object):
         else:
             self.rule = self.board.rules[type(self)]
 
-    def try_step(self, old, new):
+    def try_step_old(self, old, new):  # Не используется  WARN:
         # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
         # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
         x = new[0]
@@ -180,12 +181,87 @@ class Item(object):
 
         return False
 
+    def try_step(self, old, new):
+        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
+        # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
+        x = new[0]
+        y = new[1]
+
+        x1 = old[0]
+        y1 = old[1]
+
+        if 0 <= x < self.board.width and 0 <= y < self.board.height:
+            if len(self.board.board[y][x]) == 0:
+                self.step(old, new)
+                return True
+            elif len(self.board.board[y][x]) > 1:
+                items_new = sorted(
+                    self.board.board[y][x],
+                    key=lambda f: f.get_colide_type(),
+                    reverse=True,
+                )
+                for item in items_new:
+                    if item.stop and not item.push:
+                        return False
+                    elif item.push:
+                        colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
+                        if not colide_res and item.weak:
+                            item.step_and_die(new, (2 * x - x1, 2 * y - y1))
+                            self.step(old, new)
+                            return True
+                        elif not colide_res:
+                            return False
+                        else:
+                            self.step(old, new)
+                            return True
+                    elif self.rule.you and item.death:
+                        self.step_and_die(old, new)
+                    elif self.rule.you and item.win:
+                        self.step_and_win(old, new)
+                    elif self.weak:
+                        self.step_and_die(old, new)
+                        return True
+                else:
+                    self.step(old, new)
+                    return True
+            else:
+                item = self.board.board[y][x][0]
+
+                if item.stop and not item.push:
+                    return False
+                elif item.push:
+                    colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
+                    if not colide_res and item.weak:
+                        item.step_and_die(new, (2 * x - x1, 2 * y - y1))
+                        self.step(old, new)
+                        return True
+                    elif not colide_res:
+                        return False
+                    else:
+                        self.step(old, new)
+                        return True
+                elif item.sink:
+                    self.step_and_clear(old, new)
+                    return True
+                elif item.weak:
+                    self.clear_and_step(old, new)
+                    return True
+                elif self.weak:
+                    self.step_and_die(old, new)
+                    return True
+                else:
+                    self.step(old, new)
+                    return True
+
+        return False
+
     def step(self, old, new):
         from Rules_and_blocks import ActiveBlocks
+
         if issubclass(self.__class__, ActiveBlocks):
             self.board.intereaction.append((self, new))
-        '''print(0)'''
-        if self.rule.sink and self.board.new_board[new[1]][new[0]] != []:
+        """print(0)"""
+        if self.sink and self.board.new_board[new[1]][new[0]] != []:
             self.board.new_board[new[1]][new[0]] = []
             self.board.new_board[old[1]][old[0]].remove(self)
             return
@@ -204,7 +280,7 @@ class Item(object):
         self.board.new_board[new[1]][new[0]] = [self]
 
     def step_and_win(self, old, new):
-        if self.rule.sink and self.board.new_board[new[1]][new[0]] != []:
+        if self.sink and self.board.new_board[new[1]][new[0]] != []:
             self.board.new_board[new[1]][new[0]] = []
             self.board.new_board[old[1]][old[0]].remove(self)
             return

@@ -5,21 +5,22 @@ from tric import Item, Rule, MainBoard
 class MegaItems(Item):  # лень менять в другом файле
     def __init__(self, board: MainBoard):
         super().__init__(board)
+        self.colide_type = 0
         self.stop = False
-        self.deth = False
+        self.death = False
         self.push = False
-        self.silk = False
+        self.sink = False
         self.win = False
         self.weak = False
 
-    def set_deth(self, act: bool):
-        self.deth = act
+    def set_death(self, act: bool):
+        self.death = act
 
     def set_stop(self, act: bool):
         self.stop = act
 
-    def set_silk(self, act: bool):
-        self.silk = act
+    def set_sink(self, act: bool):
+        self.sink = act
 
     def set_push(self, act: bool):
         self.push = act
@@ -27,14 +28,20 @@ class MegaItems(Item):  # лень менять в другом файле
     def set_win(self, act: bool):
         self.win = act
 
+    def get_colide_type(self):
+        if self.stop:
+            return 100
+        elif self.push:
+            return 90
+        elif self.death:
+            return 20
+        elif self.win:
+            return 1
+        else:
+            return 0
 
     def get_rules(self):
-        return (self.stop,
-                self.deth,
-                self.push,
-                self.silk,
-                self.win,
-                self.weak)
+        return (self.stop, self.death, self.push, self.sink, self.win, self.weak)
 
 
 class Moris(MegaItems):
@@ -57,7 +64,7 @@ class Wall(MegaItems):
 
 class Rock(MegaItems):
     name = "Rock"
-    color = 'orange'
+    color = "orange"
     rule = Rule()
 
 
@@ -67,7 +74,8 @@ class Water(MegaItems):
     rule = Rule()
 
 
-wall = Wall(MainBoard)
-box = Box(MainBoard)
-rock = Rock(MainBoard)
+board = MainBoard(16, 10, 80)
+wall = Wall(board)
+box = Box(board)
+rock = Rock(board)
 print(wall.get_rules(), 222)
