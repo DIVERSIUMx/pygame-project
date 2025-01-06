@@ -32,11 +32,11 @@ class MainBoard:
         self.left = cell_size // 2
 
         self.board = [[list()] * width for _ in range(height)]
-        print(self.board)
+        '''print(self.board)'''
 
     def get_screen_size(self):
         return self.width * self.cell_size + (
-            2 * self.left
+                2 * self.left
         ), self.height * self.cell_size + (2 * self.top)
 
     def render(self, surface):
@@ -51,7 +51,6 @@ class MainBoard:
                 pygame.draw.rect(surface, (40, 40, 50), rect, 3)
                 if cell is not None:
                     for item in cell:
-                        print(type(item))
                         item.render(surface, rect)
 
     def you_go(self, event_key):
@@ -70,16 +69,18 @@ class MainBoard:
         self.move(you_go_delta)
 
     def move(self, you_go_delta):
+        from Rules_and_blocks import search_for_rules
         """Функция для обработки хода"""
+        self.intereaction = list()
         self.new_board = [[[c for c in i] for i in r] for r in self.board]
-        print(len(self.new_board[0]), self.width)
-        print(len(self.new_board), self.height)
+        '''print(len(self.new_board[0]), self.width)
+        print(len(self.new_board), self.height)'''
         for y, row in enumerate(self.board):
             for x, cell in enumerate(row):
                 for item in cell:
-                    print(len(self.new_board[y][x]))
+                    '''print(len(self.new_board[y][x]))'''
                     if item.rule.you:
-                        print("help")
+                        '''print("help")'''
                         colide_res = item.try_step(
                             (x, y), (x + you_go_delta[0], y + you_go_delta[1])
                         )
@@ -89,6 +90,8 @@ class MainBoard:
                             )
 
         self.board = self.new_board
+        if self.intereaction:
+            search_for_rules(self.intereaction, self.board)
 
 
 class Item(object):
@@ -104,7 +107,8 @@ class Item(object):
             self.rule = self.board.rules[type(self)]
 
     def try_step(self, old, new):
-        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
+        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
+        # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
         x = new[0]
         y = new[1]
 
@@ -177,7 +181,10 @@ class Item(object):
         return False
 
     def step(self, old, new):
-        print(0)
+        from Rules_and_blocks import ActiveBlocks
+        if issubclass(self.__class__, ActiveBlocks):
+            self.board.intereaction.append((self, new))
+        '''print(0)'''
         if self.rule.sink and self.board.new_board[new[1]][new[0]] != []:
             self.board.new_board[new[1]][new[0]] = []
             self.board.new_board[old[1]][old[0]].remove(self)
