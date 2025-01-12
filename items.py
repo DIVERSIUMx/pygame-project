@@ -2,7 +2,7 @@ import pygame
 from tric import Item, Rule, MainBoard
 
 
-class MegaItems(Item):  # лень менять в другом файле
+class MegaItems(Item):
     def __init__(self, board: MainBoard):
         super().__init__(board)
         self.colide_type = 0
@@ -12,8 +12,9 @@ class MegaItems(Item):  # лень менять в другом файле
         self.sink = False
         self.win = False
         self.weak = False
+        self.you = False
 
-    def set_death(self, act: bool):
+    def set_deth(self, act: bool):
         self.death = act
 
     def set_stop(self, act: bool):
@@ -28,6 +29,15 @@ class MegaItems(Item):  # лень менять в другом файле
     def set_win(self, act: bool):
         self.win = act
 
+    def get_rules(self):
+        return (self.stop,
+                self.death,
+                self.push,
+                self.sink,
+                self.win,
+                self.weak,
+                self.you)
+
     def get_colide_type(self):
         if self.stop:
             return 100
@@ -39,9 +49,6 @@ class MegaItems(Item):  # лень менять в другом файле
             return 1
         else:
             return 0
-
-    def get_rules(self):
-        return (self.stop, self.death, self.push, self.sink, self.win, self.weak)
 
 
 class Moris(MegaItems):
@@ -64,7 +71,7 @@ class Wall(MegaItems):
 
 class Rock(MegaItems):
     name = "Rock"
-    color = "orange"
+    color = 'orange'
     rule = Rule()
 
 
@@ -75,7 +82,7 @@ class Water(MegaItems):
 
 
 board = MainBoard(16, 10, 80)
+moris = Moris(board)
 wall = Wall(board)
 box = Box(board)
 rock = Rock(board)
-print(wall.get_rules(), 222)

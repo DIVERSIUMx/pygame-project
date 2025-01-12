@@ -1,5 +1,5 @@
 from tric import Item
-from items import MegaItems, wall, rock, box, board
+from items import MegaItems, wall, rock, box, board, moris
 
 colors = {
     # 'name': 'color'
@@ -12,7 +12,8 @@ colors = {
     'stop': 'red',
     'death': 'grey',
     'win': 'yellow',
-    'weak': 'grey'
+    'weak': 'grey',
+    'moris': 'gold'
 }
 
 
@@ -78,6 +79,7 @@ def new_rule(
         first_cord: (int, int), first_name: str, is_cord: (int, int), finish_cord: (int, int), finish_name,
         is_name='IS', object_object=False
 ):
+    flag_moris = True
     if object_object:  # Изменение объектов (пример: wall is box)
         for x in range(board.width):
             for y in range(board.height):
@@ -87,12 +89,22 @@ def new_rule(
                         print(111111111111)
                         board.board[y][x][0] = globals()[f"{finish_name}"]
                         print(board.board[y][x], 'log 3')
-
+    elif first_name == 'moris':
+        for x in range(board.width):
+            for y in range(board.height):
+                if board.board[y][x]:
+                    if board.board[y][x][0].name == finish_name.capitalize():
+                        print(board.board[y][x][0].name)
+                        print(111111111111)
+                        board.board[y][x][0] = globals()[f"{'moris'}"]
+                        flag_moris = False
+                        print(board.board[y][x], 'log 3')
     else:
         print(first_name, finish_name)
         exec(compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec'))
         print(globals()[first_name].get_rules())
-    ActiveRules.append((first_cord, is_cord, finish_cord, (first_name, is_name, finish_name, object_object)))
+    if flag_moris:
+        ActiveRules.append((first_cord, is_cord, finish_cord, (first_name, is_name, finish_name, object_object)))
 
 
 new_rule(first_cord=(1, 1), first_name='wall', is_cord=(2, 1), finish_cord=(3, 1), finish_name='push')

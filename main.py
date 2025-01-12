@@ -2,15 +2,15 @@
 import pygame
 from tric import MainBoard
 import items
-from items import board
 import Rules_and_blocks
+from items import board
 
-fps = 60
+fps = 24
 
 
 def test(self: MainBoard):
     """В эту функцию пихать все для тестов"""
-    self.board[4][4] = [items.Moris(self)]
+    self.board[4][4] = [items.moris]
     self.rules[items.Moris].you = True
     # self.rules[items.Moris].weak = False
 
@@ -29,6 +29,9 @@ def test(self: MainBoard):
     self.board[3][10] = [Rules_and_blocks.ActiveBlocksAction("sink", self)]
     self.board[4][8] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
     self.board[5][10] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
+    self.board[2][3] = [Rules_and_blocks.ActiveBlocksObject("moris", self)]
+    self.board[2][4] = [Rules_and_blocks.ActiveBlocksIS(self)]
+    self.board[3][5] = [Rules_and_blocks.ActiveBlocksAction("box", self)]
     # self.rules[Rules_and_blocks.ActiveBlocksObject].set_colide_type(90)
     self.rules[Rules_and_blocks.ActiveBlocksObject].push = True
     # self.rules[Rules_and_blocks.ActiveBlocksIS].set_colide_type(90)
@@ -59,11 +62,9 @@ if __name__ == "__main__":
             elif event.type == pygame.KEYDOWN:
                 print(
                     items.wall.get_rules(),
-                    "wall",
-                    "\n",
+                    "wall", "\n",
                     items.box.get_rules(),
-                    "box",
-                    "\n",
+                    "box", "\n",
                     items.rock.get_rules(),
                     "rock",
                 )
