@@ -90,15 +90,18 @@ def new_rule(
                         board.board[y][x][0] = globals()[f"{finish_name}"]
                         print(board.board[y][x], 'log 3')
     elif first_name == 'moris':
-        for x in range(board.width):
-            for y in range(board.height):
-                if board.board[y][x]:
-                    if board.board[y][x][0].name == finish_name.capitalize():
-                        print(board.board[y][x][0].name)
-                        print(111111111111)
-                        board.board[y][x][0] = globals()[f"{'moris'}"]
-                        flag_moris = False
-                        print(board.board[y][x], 'log 3')
+        x, y = finish_cord
+        if board.board[y][x]:
+            if issubclass(board.board[y][x][0].__class__, ActiveBlocksAction):
+                for x in range(board.width):
+                    for y in range(board.height):
+                        if board.board[y][x]:
+                            if board.board[y][x][0].name == finish_name.capitalize():
+                                print(board.board[y][x][0].name)
+                                print(111111111111)
+                                board.board[y][x][0] = globals()[f"{'moris'}"]
+                                flag_moris = False
+                                print(board.board[y][x], 'log 3')
     else:
         print(first_name, finish_name)
         exec(compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec'))
