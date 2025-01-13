@@ -4,7 +4,7 @@ from tric import MainBoard
 import items
 import Rules_and_blocks
 from items import board
-
+from Initialization_levels import start_level
 fps = 24
 
 
@@ -31,7 +31,7 @@ def test(self: MainBoard):
     self.board[5][10] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
     self.board[2][3] = [Rules_and_blocks.ActiveBlocksObject("moris", self)]
     self.board[2][4] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[3][5] = [Rules_and_blocks.ActiveBlocksAction("box", self)]
+    self.board[3][5] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
     # self.rules[Rules_and_blocks.ActiveBlocksObject].set_colide_type(90)
     self.rules[Rules_and_blocks.ActiveBlocksObject].push = True
     # self.rules[Rules_and_blocks.ActiveBlocksIS].set_colide_type(90)
@@ -47,8 +47,9 @@ def test(self: MainBoard):
 
 if __name__ == "__main__":
     pygame.init()
-    test(board)
-
+    start_level('test3')
+    Rules_and_blocks.get_rules()
+    print(board.board)
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
 

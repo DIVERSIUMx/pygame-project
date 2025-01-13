@@ -110,8 +110,8 @@ def new_rule(
         ActiveRules.append((first_cord, is_cord, finish_cord, (first_name, is_name, finish_name, object_object)))
 
 
-new_rule(first_cord=(1, 1), first_name='wall', is_cord=(2, 1), finish_cord=(3, 1), finish_name='push')
-print(ActiveRules.get_rules(), 1)
+'''new_rule(first_cord=(1, 1), first_name='wall', is_cord=(2, 1), finish_cord=(3, 1), finish_name='push')
+print(ActiveRules.get_rules(), 1)'''
 
 
 # Функция проверяет на существование старых правил
@@ -149,7 +149,7 @@ def search_for_rules(intereaction, board):
     checking_for_rule_existence(board)
 
     for element in intereaction:
-
+        print(element)
         if isinstance(element[0], ActiveBlocksAction):
             cord = x, y = element[1]
             print(board[y][x - 1], board[y][x - 2])
@@ -284,6 +284,10 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name
                         )
     checking_for_rule_existence(board)
+    print(ActiveRules.get_rules())
+
+
+def get_rules():
     print(ActiveRules.get_rules())
 
 

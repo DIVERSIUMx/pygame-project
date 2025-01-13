@@ -82,6 +82,7 @@ class Water(MegaItems):
 
 
 board = MainBoard(16, 10, 80)
+test_board = MainBoard(16, 10, 80)
 moris = Moris(board)
 wall = Wall(board)
 box = Box(board)
