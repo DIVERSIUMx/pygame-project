@@ -2,7 +2,7 @@
 
 ----
 [![Python](https://img.shields.io/badge/Python-3.11-gold?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![Pygame](https://img.shields.io/badge/pygame-2.6.1-gold?style=for-the-badge&logo=pygame&logoColor=white)]([https://www.python.org/](https://pypi.org/project/pygame/))
+[![Pygame](https://img.shields.io/badge/pygame-2.6.1-gold?style=for-the-badge&logo=pygame&logoColor=white)](https://pypi.org/project/pygame/)
 -----
 + [About this game](#about-this-game)
   + [Game mechanics](#game-mechanics)
