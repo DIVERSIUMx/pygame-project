@@ -1,6 +1,6 @@
 # На счет имени пока назвал так, потом поменяем FIXME
 import pygame
-from sprites import ItemSprite, load_image
+from sprites import ItemSprite, load_image, item_sprites
 
 
 class Rule:
@@ -122,6 +122,10 @@ class MainBoard:
         self.board = self.new_board
         if self.intereaction:
             search_for_rules(self.intereaction, self.board)
+
+        for sprite in item_sprites.sprites():
+            if sprite not in self.sprites.values():
+                sprite.kill()
 
     def generate_sprites(self):
         for y, row in enumerate(self.board):
