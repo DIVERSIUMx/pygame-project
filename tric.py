@@ -1,5 +1,6 @@
 # На счет имени пока назвал так, потом поменяем FIXME
 import pygame
+from sprites import ItemSprite, load_image
 
 
 class Rule:
@@ -21,8 +22,11 @@ class Rule:
 
 
 class MainBoard:
+    check_poses: list[tuple[int, int]] = []
+    move_sprites: list = []
     intereaction: list = []  # твой список  WARN:
     rules: dict[type, Rule] = dict()
+    sprites: dict[tuple[str, int, int], ItemSprite] = dict()
 
     def __init__(self, width: int, height: int, cell_size: int):
         self.width = width
@@ -49,9 +53,9 @@ class MainBoard:
                     self.cell_size,
                 )
                 pygame.draw.rect(surface, (40, 40, 50), rect, 3)
-                if cell is not None:
-                    for item in cell:
-                        item.render(surface, rect)
+                # if cell is not None:
+                #     for item in cell:
+                #         item.render(surface, rect)
 
     def you_go(self, event_key):
         you_go_delta = 0, 0
@@ -69,6 +73,8 @@ class MainBoard:
         self.move(you_go_delta)
 
     def move(self, you_go_delta):
+        self.move_sprites = []
+        self.check_poses = []
         from Rules_and_blocks import search_for_rules
 
         """Функция для обработки хода"""
@@ -87,17 +93,55 @@ class MainBoard:
                         )
                         if item.weak and not colide_res:
                             item.step_and_die(
-                                (x, y), (x + you_go_delta[0], y + you_go_delta[1])
+                                (x, y), (x +
+                                         you_go_delta[0], y + you_go_delta[1])
                             )
+        cur_sp = self.sprites.copy()
+        for data in self.move_sprites:
+            self.sprites[data[0]] = cur_sp[data[1]]
+            self.sprites[data[0]].move(data[0][1:])
+
+        for i, (x, y) in enumerate(self.check_poses):
+            rm_indexes = []
+            for item in self.new_board[y][x]:
+                if item.sink:
+                    for item in self.new_board[y][x]:
+                        item.die(x * self.cell_size + self.left,
+                                 y * self.cell_size + self.top)
+                    self.new_board[y][x] = []
+                    break
+                elif item.weak:
+                    item.die(x * self.cell_size + self.left,
+                             y * self.cell_size + self.top)
+                    rm_indexes.append(i - len(rm_indexes))
+            else:
+                for i in rm_indexes:
+                    self.new_board[y][x].pop(i)
+            self.new_board[y][x] = list(set(self.new_board[y][x]))
 
         self.board = self.new_board
         if self.intereaction:
             search_for_rules(self.intereaction, self.board)
 
+    def generate_sprites(self):
+        for y, row in enumerate(self.board):
+            for x, cell in enumerate(row):
+                for item in cell:
+                    try:
+                        sprite = item.sprite.copy()
+                        sprite.rect.x = x * self.cell_size + self.left
+                        sprite.rect.y = y * self.cell_size + self.top
+                        self.sprites[(sprite.filename, sprite.rect.x,
+                                      sprite.rect.y)] = sprite
+                    except:
+                        ...
+
 
 class Item(object):
     color: tuple[int, int, int] = (255, 255, 255)
     name: str
+
+    sprite = ItemSprite("ohno", load_image("ohno.png"))
 
     def __init__(self, board: MainBoard):
         self.board = board
@@ -107,81 +151,7 @@ class Item(object):
         else:
             self.rule = self.board.rules[type(self)]
 
-    def try_step_old(self, old, new):  # Не используется  WARN:
-        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
-        # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
-        x = new[0]
-        y = new[1]
-
-        x1 = old[0]
-        y1 = old[1]
-
-        if 0 <= x < self.board.width and 0 <= y < self.board.height:
-            if len(self.board.board[y][x]) == 0:
-                self.step(old, new)
-                return True
-            elif len(self.board.board[y][x]) > 1:
-                items_new = sorted(
-                    self.board.board[y][x],
-                    key=lambda f: f.rule.colide_type,
-                    reverse=True,
-                )
-                for item in items_new:
-                    if item.rule.colide_type == 100:
-                        return False
-                    elif item.rule.colide_type >= 90:  #
-                        colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
-                        if not colide_res and item.rule.weak:
-                            item.step_and_die(new, (2 * x - x1, 2 * y - y1))
-                            self.step(old, new)
-                            return True
-                        elif not colide_res:
-                            return False
-                        else:
-                            self.step(old, new)
-                            return True
-                    elif self.rule.you and item.rule.colide_type == 20:
-                        self.step_and_die(old, new)
-                    elif self.rule.you and item.rules.colide_type == 1:
-                        self.step_and_win(old, new)
-                    elif self.rule.weak and item.rule.colide_type == 0:
-                        self.step_and_die(old, new)
-                        return True
-                else:
-                    self.step(old, new)
-                    return True
-            else:
-                item = self.board.board[y][x][0]
-
-                if item.rule.colide_type == 100:
-                    return False
-                elif item.rule.colide_type >= 90:  #
-                    colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
-                    if not colide_res and item.rule.weak:
-                        item.step_and_die(new, (2 * x - x1, 2 * y - y1))
-                        self.step(old, new)
-                        return True
-                    elif not colide_res:
-                        return False
-                    else:
-                        self.step(old, new)
-                        return True
-                elif item.rule.sink:
-                    self.step_and_clear(old, new)
-                    return True
-                elif item.rule.weak:
-                    self.clear_and_step(old, new)
-                    return True
-                elif self.rule.weak and item.rule.colide_type == 0:
-                    self.step_and_die(old, new)
-                    return True
-                else:
-                    self.step(old, new)
-                    return True
-
-        return False
-
-    def try_step(self, old, new):
+    def try_step_old(self, old, new):  # V2  TODO: Удалить
         # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
         # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
         x = new[0]
@@ -204,7 +174,8 @@ class Item(object):
                     if item.stop and not item.push:
                         return False
                     elif item.push:
-                        colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
+                        colide_res = item.try_step(
+                            new, (2 * x - x1, 2 * y - y1))
                         if not colide_res and item.weak:
                             item.step_and_die(new, (2 * x - x1, 2 * y - y1))
                             self.step(old, new)
@@ -255,7 +226,46 @@ class Item(object):
 
         return False
 
+    def die(self, x, y):
+        self.board.sprites[self.sprite.filename, x, y].die()
+
+    def try_step(self, old, new):  # V3
+        # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
+        x = new[0]
+        y = new[1]
+
+        x1 = old[0]
+        y1 = old[1]
+
+        if 0 <= x < self.board.width and 0 <= y < self.board.height:
+            if len(self.board.board[y][x]) == 0:
+                self.step(old, new)
+                return True
+            items_new = sorted(
+                self.board.board[y][x],
+                key=lambda f: f.get_colide_type(),
+                reverse=True,
+            )
+
+            for item in items_new:
+                if item.stop and not item.push:
+                    return False
+                elif item.push:
+                    colide_res = item.try_step(
+                        new, (2 * x - x1, 2 * y - y1))
+                    if colide_res:
+                        self.step(old, new)
+                    else:
+                        return False
+                else:
+                    self.step(old, new)
+                    return True
+            return True
+
     def step(self, old, new):
+        self.board.check_poses.append(new)
+        self.board.move_sprites.append(((self.sprite.filename, new[0] * 80 + self.board.left, new[1] * 80 + self.board.top), (
+            self.sprite.filename, old[0] * 80 + self.board.left, old[1] * 80 + self.board.top)))
         from Rules_and_blocks import ActiveBlocks
 
         if issubclass(self.__class__, ActiveBlocks):
@@ -265,8 +275,9 @@ class Item(object):
             self.board.new_board[new[1]][new[0]] = []
             self.board.new_board[old[1]][old[0]].remove(self)
             return
-        self.board.new_board[new[1]][new[0]].append(self)
-        self.board.new_board[old[1]][old[0]].remove(self)
+        if self in self.board.new_board[old[1]][old[0]]:
+            self.board.new_board[new[1]][new[0]].append(self)
+            self.board.new_board[old[1]][old[0]].remove(self)
 
     def step_and_die(self, old, new):
         self.board.new_board[old[1]][old[0]].remove(self)

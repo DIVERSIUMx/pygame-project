@@ -5,7 +5,9 @@ import items
 import Rules_and_blocks
 from items import board
 from Initialization_levels import start_level
-fps = 24
+from sprites import ItemSprite, FROZE, load_image
+from config import clock, all_sprites
+fps = 60
 
 
 def test(self: MainBoard):
@@ -46,21 +48,25 @@ def test(self: MainBoard):
 
 
 if __name__ == "__main__":
+    sup = ItemSprite("test", load_image("wall.png"))
+    sup.rect.x = 500
+    test(board)
     pygame.init()
-    start_level('test3')
+    start_level("test_second1")
     Rules_and_blocks.get_rules()
     print(board.board)
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
 
-    clock = pygame.time.Clock()
-
     running = True
+    board.generate_sprites()
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            elif event.type == pygame.KEYDOWN:
+            elif not FROZE[0] and event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_k:
+                    sup.die()
                 print(
                     items.wall.get_rules(),
                     "wall", "\n",
@@ -75,6 +81,8 @@ if __name__ == "__main__":
         board.render(screen)
 
         clock.tick(fps)
+        all_sprites.update()
+        all_sprites.draw(screen)
         pygame.display.flip()
 
     pygame.quit()

@@ -1,4 +1,5 @@
 import pygame
+from sprites import ItemSprite, load_image
 from tric import Item, Rule, MainBoard
 
 
@@ -52,18 +53,21 @@ class MegaItems(Item):
 
 
 class Moris(MegaItems):
+    sprite = ItemSprite("moris", load_image("moris.png"), 8)
     name = "Moris"
     color = (50, 250, 255)
     rule = Rule()
 
 
 class Box(MegaItems):
+    sprite = ItemSprite("box", load_image("box.png"))
     name = "Box"
     color = (150, 150, 0)
     rule = Rule()
 
 
 class Wall(MegaItems):
+    sprite = ItemSprite("wall", load_image("wall.png"))
     name = "Wall"
     color = (50, 50, 255)
     rule = Rule()
