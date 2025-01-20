@@ -83,15 +83,19 @@ def new_rule(
         is_name='IS', object_object=False
 ):
     flag_moris = True
-    if object_object:  # Изменение объектов (пример: wall is box)
-        for x in range(board.width):
-            for y in range(board.height):
-                if board.board[y][x]:
-                    if board.board[y][x][0].name == first_name.capitalize():
-                        print(board.board[y][x][0].name)
-                        print(111111111111)
-                        board.board[y][x][0] = globals()[f"{finish_name}"]
-                        print(board.board[y][x], 'log 3')
+    if object_object:
+        for y, row in enumerate(board.board):
+            for x, cell in enumerate(row):
+                for i in range(len(cell)):
+                    if cell[i].name == first_name.capitalize():
+                        cell[i].die(x * board.cell_size + board.left,
+                                    y * board.cell_size + board.top)
+                        cell[i] = globals()[f"{finish_name}"]
+                        sprite = cell[i].sprite.copy()
+                        sprite.rect.x = x * board.cell_size + board.left
+                        sprite.rect.y = y * board.cell_size + board.top
+                        board.sprites[cell[i].sprite.filename, x * board.cell_size +
+                                      board.left, y * board.cell_size + board.top] = sprite
     elif first_name == 'moris':
         flag_moris = False
         x, y = finish_cord

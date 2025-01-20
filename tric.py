@@ -24,7 +24,7 @@ class Rule:
 class MainBoard:
     check_poses: list[tuple[int, int]] = []
     move_sprites: list = []
-    intereaction: list = []  # твой список  WARN:
+    intereaction: list = []
     rules: dict[type, Rule] = dict()
     sprites: dict[tuple[str, int, int], ItemSprite] = dict()
 
@@ -100,6 +100,9 @@ class MainBoard:
         for data in self.move_sprites:
             self.sprites[data[0]] = cur_sp[data[1]]
             self.sprites[data[0]].move(data[0][1:])
+            if data[1] in self.sprites and data[1] not in list(map(lambda f: f[0], self.move_sprites)):
+                self.sprites.pop(data[1])
+                # cur_sp.pop(data[1])
 
         for i, (x, y) in enumerate(self.check_poses):
             rm_indexes = []
