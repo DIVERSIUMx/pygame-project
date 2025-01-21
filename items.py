@@ -74,13 +74,29 @@ class Wall(MegaItems):
 
 
 class Rock(MegaItems):
+    sprite = ItemSprite("water", load_image("rock.png"))
     name = "Rock"
     color = 'orange'
     rule = Rule()
 
 
 class Water(MegaItems):
+    sprite = ItemSprite("water", load_image("water.png"), 6)
     name = "Water"
+    color = (0, 0, 255)
+    rule = Rule()
+
+
+class Flag(MegaItems):
+    sprite = ItemSprite("flag", load_image("flag.png"), 6)
+    name = "Flag"
+    color = (0, 0, 255)
+    rule = Rule()
+
+
+class Skull(MegaItems):
+    sprite = ItemSprite("skull", load_image("skull.png"), 4)
+    name = "Flag"
     color = (0, 0, 255)
     rule = Rule()
 
@@ -89,5 +105,7 @@ board = MainBoard(16, 10, 80)
 test_board = MainBoard(16, 10, 80)
 moris = Moris(board)
 wall = Wall(board)
+flag = Flag(board)
 box = Box(board)
 rock = Rock(board)
+skull = Skull(board)

@@ -16,13 +16,13 @@ def test(self: MainBoard):
     self.rules[items.Moris].you = True
     # self.rules[items.Moris].weak = False
 
-    self.board[6][5] = [items.box]
-    self.board[4][5] = [items.box]
+    self.board[6][5] = [items.flag]
+    self.board[4][5] = [items.skull]
     self.board[5][5] = [items.box]
     self.rules[items.Box].set_colide_type(90)
     # self.rules[items.Box].weak = True
 
-    self.board[5][8] = [items.wall]
+    self.board[5][8] = [items.rock]
     self.board[1][1] = [Rules_and_blocks.ActiveBlocksObject("wall", self)]
     self.board[1][2] = [Rules_and_blocks.ActiveBlocksIS(self)]
     self.board[1][3] = [Rules_and_blocks.ActiveBlocksAction("push", self)]
