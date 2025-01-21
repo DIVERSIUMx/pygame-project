@@ -7,8 +7,8 @@ import random
 FROZE = [False]
 
 
-def load_image(filename):
-    path = os.path.join("data", "sprite", filename)
+def load_image(*filename):
+    path = os.path.join("data", "sprite", *filename)
     if os.path.isfile(path):
         return pygame.image.load(path)
     else:

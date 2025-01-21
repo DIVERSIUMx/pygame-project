@@ -1,6 +1,8 @@
+import pygame
 from tric import Item
 from items import MegaItems, wall, rock, box, board, moris
 from sprites import ItemSprite, load_image
+pygame.init()
 
 colors = {
     # 'name': 'color'
@@ -73,7 +75,10 @@ class ActiveBlocksObject(ActiveBlocks):
 
 
 class ActiveBlocksAction(ActiveBlocks):
+    sprite = ItemSprite("ohno", load_image("action.png"))
+
     def __init__(self, name, board):
+        self.sprite = ItemSprite(name, load_image("actions", f"{name}.png"))
         super().__init__(colors[name], name, board, activity='OBJECT')
         self.__class__.__name__ = 'ACTION'
 
