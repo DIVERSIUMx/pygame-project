@@ -129,7 +129,7 @@ def new_level(name: str, blocks: list):
 
 
 '''new_level(
-    'test3', [['wall', [3, 5], False], ['moris', [4, 9], False], ['box', [5, 5], False],
+    'test4', [['wall', [3, 5], False], ['moris', [4, 9], False], ['box', [5, 5], False],
                      ['Rules_and_blocks.ActiveBlocksAction("push", board)', [1, 5], True],
                      ['Rules_and_blocks.ActiveBlocksObject("box", board)', [1, 3], True],
                      ['Rules_and_blocks.ActiveBlocksIS(board)', [1, 4], True]]

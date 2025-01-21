@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from config import all_sprites, item_sprites, particle_sprites, clock, froze
+from config import all_sprites, item_sprites, particle_sprites, clock, froze, select_level_sprites, all_sprites_to_level
 import random
 
 FROZE = [False]
@@ -99,3 +99,10 @@ class ParticleSprite(pygame.sprite.Sprite):
             self.kill()
         else:
             self.live_time -= 1
+
+
+class SelectSprite(pygame.sprite.Sprite):
+    def __init__(self, file):
+        super().__init__(all_sprites_to_level, select_level_sprites)
+        self.file = file
+        self.rect = self.file.get_rect()

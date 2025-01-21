@@ -117,7 +117,8 @@ def new_rule(
     else:
         print(first_name, finish_name)
         exec(
-            compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec'))
+            compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec')
+        )
         print(globals()[first_name].get_rules())
     if flag_moris:
         ActiveRules.append((first_cord, is_cord, finish_cord,
