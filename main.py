@@ -50,10 +50,10 @@ def test(self: MainBoard):
 if __name__ == "__main__":
     sup = ItemSprite("test", load_image("wall.png"))
     sup.rect.x = 500
-    test(board)
+    # test(board)
     pygame.init()
-    start_level("test_second1")
-    Rules_and_blocks.get_rules()
+    start_level("test3")
+    # Rules_and_blocks.get_rules()
     print(board.board)
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)

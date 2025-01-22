@@ -30,6 +30,9 @@ class MegaItems(Item):
     def set_win(self, act: bool):
         self.win = act
 
+    def set_you(self, act: bool):
+        self.you = act
+
     def get_rules(self):
         return (self.stop,
                 self.death,

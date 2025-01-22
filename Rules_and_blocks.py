@@ -16,7 +16,8 @@ colors = {
     'death': 'grey',
     'win': 'yellow',
     'weak': 'grey',
-    'moris': 'gold'
+    'moris': 'gold',
+    'you': 'pink'
 }
 
 
@@ -70,6 +71,8 @@ class ActiveBlocksIS(ActiveBlocks):
 
 class ActiveBlocksObject(ActiveBlocks):
     def __init__(self, name, board):
+        self.sprite = ItemSprite(
+            name + "*", load_image("names", f"{name}.png"))
         super().__init__(colors[name], name, board, activity='OBJECT')
         self.__class__.__name__ = 'OBJECT'
 
@@ -101,19 +104,19 @@ def new_rule(
                         sprite.rect.y = y * board.cell_size + board.top
                         board.sprites[cell[i].sprite.filename, x * board.cell_size +
                                       board.left, y * board.cell_size + board.top] = sprite
-    elif first_name == 'moris':
-        flag_moris = False
-        x, y = finish_cord
-        if board.board[y][x]:
-            if issubclass(board.board[y][x][0].__class__, ActiveBlocksAction):
-                for x in range(board.width):
-                    for y in range(board.height):
-                        if board.board[y][x]:
-                            if board.board[y][x][0].name == finish_name.capitalize():
-                                print(board.board[y][x][0].name)
-                                print(111111111111)
-                                board.board[y][x][0] = globals()[f"{'moris'}"]
-                                print(board.board[y][x], 'log 3')
+    # elif first_name == 'moris':
+    #     flag_moris = False
+    #     x, y = finish_cord
+    #     if board.board[y][x]:
+    #         if issubclass(board.board[y][x][0].__class__, ActiveBlocksAction):
+    #             for x in range(board.width):
+    #                 for y in range(board.height):
+    #                     if board.board[y][x]:
+    #                         if board.board[y][x][0].name == finish_name.capitalize():
+    #                             print(board.board[y][x][0].name)
+    #                             print(111111111111)
+    #                             board.board[y][x][0] = globals()[f"{'moris'}"]
+    #                             print(board.board[y][x], 'log 3')
     else:
         print(first_name, finish_name)
         exec(

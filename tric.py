@@ -80,22 +80,13 @@ class MainBoard:
         """Функция для обработки хода"""
         self.intereaction = list()
         self.new_board = [[[c for c in i] for i in r] for r in self.board]
-        """print(len(self.new_board[0]), self.width)
-        print(len(self.new_board), self.height)"""
         for y, row in enumerate(self.board):
             for x, cell in enumerate(row):
                 for item in cell:
-                    """print(len(self.new_board[y][x]))"""
-                    if item.rule.you:
-                        """print("help")"""
+                    if item.you:
                         colide_res = item.try_step(
                             (x, y), (x + you_go_delta[0], y + you_go_delta[1])
                         )
-                        if item.weak and not colide_res:
-                            item.step_and_die(
-                                (x, y), (x +
-                                         you_go_delta[0], y + you_go_delta[1])
-                            )
         cur_sp = self.sprites.copy()
         for data in self.move_sprites:
             self.sprites[data[0]] = cur_sp[data[1]]
@@ -107,7 +98,7 @@ class MainBoard:
         for i, (x, y) in enumerate(self.check_poses):
             rm_indexes = []
             for item in self.new_board[y][x]:
-                if item.sink:
+                if item.sink and (len(self.new_board[y][x]) > 1):
                     for item in self.new_board[y][x]:
                         item.die(x * self.cell_size + self.left,
                                  y * self.cell_size + self.top)
@@ -158,83 +149,9 @@ class Item(object):
         else:
             self.rule = self.board.rules[type(self)]
 
-    def try_step_old(self, old, new):  # V2  TODO: Удалить
-        # Для сохранения психологического здоровья настоятельно не рекомендуется изучать дальнейшее
-        # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
-        x = new[0]
-        y = new[1]
-
-        x1 = old[0]
-        y1 = old[1]
-
-        if 0 <= x < self.board.width and 0 <= y < self.board.height:
-            if len(self.board.board[y][x]) == 0:
-                self.step(old, new)
-                return True
-            elif len(self.board.board[y][x]) > 1:
-                items_new = sorted(
-                    self.board.board[y][x],
-                    key=lambda f: f.get_colide_type(),
-                    reverse=True,
-                )
-                for item in items_new:
-                    if item.stop and not item.push:
-                        return False
-                    elif item.push:
-                        colide_res = item.try_step(
-                            new, (2 * x - x1, 2 * y - y1))
-                        if not colide_res and item.weak:
-                            item.step_and_die(new, (2 * x - x1, 2 * y - y1))
-                            self.step(old, new)
-                            return True
-                        elif not colide_res:
-                            return False
-                        else:
-                            self.step(old, new)
-                            return True
-                    elif self.rule.you and item.death:
-                        self.step_and_die(old, new)
-                    elif self.rule.you and item.win:
-                        self.step_and_win(old, new)
-                    elif self.weak:
-                        self.step_and_die(old, new)
-                        return True
-                else:
-                    self.step(old, new)
-                    return True
-            else:
-                item = self.board.board[y][x][0]
-
-                if item.stop and not item.push:
-                    return False
-                elif item.push:
-                    colide_res = item.try_step(new, (2 * x - x1, 2 * y - y1))
-                    if not colide_res and item.weak:
-                        item.step_and_die(new, (2 * x - x1, 2 * y - y1))
-                        self.step(old, new)
-                        return True
-                    elif not colide_res:
-                        return False
-                    else:
-                        self.step(old, new)
-                        return True
-                elif item.sink:
-                    self.step_and_clear(old, new)
-                    return True
-                elif item.weak:
-                    self.clear_and_step(old, new)
-                    return True
-                elif self.weak:
-                    self.step_and_die(old, new)
-                    return True
-                else:
-                    self.step(old, new)
-                    return True
-
-        return False
-
     def die(self, x, y):
         self.board.sprites[self.sprite.filename, x, y].die()
+        self.board.sprites.pop((self.sprite.filename, x, y))
 
     def try_step(self, old, new):  # V3
         # содержимое функции, ВАС ПРЕДУПРЕДИЛИ  WARN:
@@ -278,33 +195,9 @@ class Item(object):
         if issubclass(self.__class__, ActiveBlocks):
             self.board.intereaction.append((self, new))
         """print(0)"""
-        if self.sink and self.board.new_board[new[1]][new[0]] != []:
-            self.board.new_board[new[1]][new[0]] = []
-            self.board.new_board[old[1]][old[0]].remove(self)
-            return
         if self in self.board.new_board[old[1]][old[0]]:
             self.board.new_board[new[1]][new[0]].append(self)
             self.board.new_board[old[1]][old[0]].remove(self)
-
-    def step_and_die(self, old, new):
-        self.board.new_board[old[1]][old[0]].remove(self)
-
-    def step_and_clear(self, old, new):
-        self.board.new_board[old[1]][old[0]].remove(self)
-        self.board.new_board[new[1]][new[0]] = []
-
-    def clear_and_step(self, old, new):
-        self.board.new_board[old[1]][old[0]].remove(self)
-        self.board.new_board[new[1]][new[0]] = [self]
-
-    def step_and_win(self, old, new):
-        if self.sink and self.board.new_board[new[1]][new[0]] != []:
-            self.board.new_board[new[1]][new[0]] = []
-            self.board.new_board[old[1]][old[0]].remove(self)
-            return
-        self.board.new_board[new[1]][new[0]].append(self)
-        self.board.new_board[old[1]][old[0]].remove(self)
-        print("YOU WIN")
 
     def render(self, surface, rect):
         pygame.draw.rect(surface, self.color, rect)
