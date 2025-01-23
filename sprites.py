@@ -15,6 +15,16 @@ def load_image(*filename):
         return pygame.image.load(os.path.join("data", "sprite", "ohno.png"))
 
 
+class QuiteCopy:
+    def __init__(self, cls, *args, **kwargs):
+        self.copy_class = cls
+        self.args = args
+        self.kwargs = kwargs
+
+    def copy(self):
+        return self.copy_class(*self.args, **self.kwargs)
+
+
 class ItemSprite(pygame.sprite.Sprite):
     def __init__(self, filename, file, colums=1, rows=1):
         self.die_soon = False
@@ -58,6 +68,9 @@ class ItemSprite(pygame.sprite.Sprite):
 
     def copy(self):
         return ItemSprite(self.filename, self.im, self.colums, self.rows)
+
+    def q_copy(self):
+        return QuiteCopy(ItemSprite,  self.filename, self.im, self.colums, self.rows)
 
     def move(self, pos):
         global FROZE

@@ -50,7 +50,7 @@ def test(self: MainBoard):
 if __name__ == "__main__":
     sup = ItemSprite("test", load_image("wall.png"))
     sup.rect.x = 500
-    # test(board)
+    test(board)
     pygame.init()
     start_level("test3")
     # Rules_and_blocks.get_rules()
@@ -65,8 +65,8 @@ if __name__ == "__main__":
             if event.type == pygame.QUIT:
                 running = False
             elif not FROZE[0] and event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_k:
-                    sup.die()
+                if event.key == pygame.K_z:
+                    board.undo()
                 print(
                     items.wall.get_rules(),
                     "wall", "\n",

@@ -96,6 +96,7 @@ def new_rule(
             for x, cell in enumerate(row):
                 for i in range(len(cell)):
                     if cell[i].name == first_name.capitalize():
+                        board.history_items[-1][0].append((cell[i], x, y))
                         cell[i].die(x * board.cell_size + board.left,
                                     y * board.cell_size + board.top)
                         cell[i] = globals()[f"{finish_name}"]
@@ -104,6 +105,7 @@ def new_rule(
                         sprite.rect.y = y * board.cell_size + board.top
                         board.sprites[cell[i].sprite.filename, x * board.cell_size +
                                       board.left, y * board.cell_size + board.top] = sprite
+                        board.history_items[-1][1].append((cell[i], x, y))
     # elif first_name == 'moris':
     #     flag_moris = False
     #     x, y = finish_cord
