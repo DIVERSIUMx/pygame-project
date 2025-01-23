@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from config import all_sprites, item_sprites, particle_sprites, clock, froze
+from config import all_sprites, item_sprites, particle_sprites, block_sprites, clock, froze
 import random
 
 FROZE = [False]
@@ -23,6 +23,15 @@ class QuiteCopy:
 
     def copy(self):
         return self.copy_class(*self.args, **self.kwargs)
+
+
+class BlockSprite(pygame.sprite.Sprite):
+    def __init__(self, pos, width):
+        super().__init__(all_sprites, block_sprites)
+        self.image = pygame.Surface((width, 30))
+        self.rect = self.image.get_rect()
+        self.rect.x = pos[0]
+        self.rect.y = pos[1]
 
 
 class ItemSprite(pygame.sprite.Sprite):
@@ -64,7 +73,6 @@ class ItemSprite(pygame.sprite.Sprite):
                 if self.die_soon:
                     self.die_soon = False
                     self.die()
-                    self.kill()
 
     def copy(self):
         return ItemSprite(self.filename, self.im, self.colums, self.rows)
@@ -88,13 +96,15 @@ class ItemSprite(pygame.sprite.Sprite):
             for x in range(8):
                 for y in range(8):
                     ParticleSprite(self.image.subsurface(
-                        x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-4, 4), random.randint(-4, 4), 0.98, 60)
+                        x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10), random.randint(-10, 10), 0.98, 180)
+            FROZE[0] = False
             self.kill()
 
 
 class ParticleSprite(pygame.sprite.Sprite):
     def __init__(self, image, x, y, vecx, vecy, scale_multiplicator, live_time):
         super().__init__(all_sprites, particle_sprites)
+        self.collided = False
         self.image = image
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -106,8 +116,14 @@ class ParticleSprite(pygame.sprite.Sprite):
 
     def update(self):
         self.rect = self.rect.move(self.dx, self.dy)
-        self.image = pygame.transform.scale(self.image, (self.image.get_width(
-        ) * self.scale_factor, self.image.get_height() * self.scale_factor))
+        if self.dy < 10:
+            self.dy += 0.4
+        # self.image = pygame.transform.scale(self.image, (self.image.get_width(
+        # ) * self.scale_factor, self.image.get_height() * self.scale_factor))
+        if not self.collided and pygame.sprite.spritecollideany(self, block_sprites) and self.dy > 0:
+            if random.randint(0, 1):
+                self.dy = -self.dy
+            self.collided = True
         if self.live_time <= 0:
             self.kill()
         else:

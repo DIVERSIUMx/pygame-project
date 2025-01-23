@@ -135,7 +135,7 @@ class MainBoard:
                             if item in list(map(lambda f: f[1], self.history_items[-1][1])):
                                 self.history_items[-1][1].remove((item, x, y))
                             else:
-                                self.history_items[-1][1].append((item, x, y))
+                                self.history_items[-1][0].append((item, x, y))
                             item.die(x * self.cell_size + self.left,
                                      y * self.cell_size + self.top)
                         self.new_board[y][x] = []
@@ -144,7 +144,7 @@ class MainBoard:
                         if item in list(map(lambda f: f[1], self.history_items[-1][1])):
                             self.history_items[-1][1].remove((item, x, y))
                         else:
-                            self.history_items[-1][1].append((item, x, y))
+                            self.history_items[-1][0].append((item, x, y))
                         item.die(x * self.cell_size + self.left,
                                  y * self.cell_size + self.top)
                         rm_indexes.append(i - len(rm_indexes))
@@ -157,7 +157,7 @@ class MainBoard:
             search_for_rules(self.intereaction, self.board)
 
         for sprite in item_sprites.sprites():
-            if sprite not in self.sprites.values():
+            if sprite not in self.sprites.values() and not sprite.die_soon:
                 sprite.kill()
         print(self.history_items[-1])
 
@@ -215,13 +215,12 @@ class Item(object):
                 elif item.push:
                     colide_res = item.try_step(
                         new, (2 * x - x1, 2 * y - y1))
-                    if colide_res:
-                        self.step(old, new)
-                    else:
-                        return False
-                else:
-                    self.step(old, new)
-                    return True
+                    continue
+                    # if colide_res:
+                    #     self.step(old, new)
+                    # else:
+                    #     return False
+            self.step(old, new)
             return True
 
     def step(self, old, new):

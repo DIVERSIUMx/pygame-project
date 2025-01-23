@@ -5,7 +5,7 @@ import items
 import Rules_and_blocks
 from items import board
 from Initialization_levels import start_level
-from sprites import ItemSprite, FROZE, load_image
+from sprites import ItemSprite, FROZE, load_image, BlockSprite
 from config import clock, all_sprites
 fps = 60
 
@@ -57,6 +57,7 @@ if __name__ == "__main__":
     print(board.board)
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
+    BlockSprite((0, height), width)
 
     running = True
     board.generate_sprites()
@@ -84,5 +85,6 @@ if __name__ == "__main__":
         all_sprites.update()
         all_sprites.draw(screen)
         pygame.display.flip()
+        print(FROZE)
 
     pygame.quit()
