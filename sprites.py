@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from config import all_sprites, item_sprites, particle_sprites, block_sprites, clock, froze
+from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze
 import random
 
 FROZE = [False]
@@ -15,14 +15,55 @@ def load_image(*filename):
         return pygame.image.load(os.path.join("data", "sprite", "ohno.png"))
 
 
-class QuiteCopy:
-    def __init__(self, cls, *args, **kwargs):
-        self.copy_class = cls
-        self.args = args
-        self.kwargs = kwargs
+class SlideSprite(pygame.sprite.Sprite):
+    def __init__(self, image, start_pos, end_pos, time):
+        super().__init__(all_sprites, end_screen_sprites)
+        self.end_pos = end_pos
+        self.image: pygame.Surface = image
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = start_pos
+        self.dx = (end_pos[0] - start_pos[0]) / (60 * time)
+        self.dy = (end_pos[1] - start_pos[1]) / (60 * time)
+        self.end_time = time * 60
+        self.cur_time = 0
 
-    def copy(self):
-        return self.copy_class(*self.args, **self.kwargs)
+    def update(self):
+        if self.cur_time < self.end_time:
+            self.rect = self.rect.move(self.dx, self.dy)
+            self.cur_time += 1
+
+
+class TimeCounterSprite(pygame.sprite.Sprite):
+    def __init__(self, rect: pygame.Rect):
+        super().__init__(all_sprites, end_screen_sprites)
+        self.rect = rect
+        self.font = pygame.font.Font(None, self.rect.width // 5)
+        self.value = 0
+        self.image = self.font.render(str(self.value // 60).rjust(
+            2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
+
+    def set_value(self, value):
+        self.value = value
+        self.image = self.font.render(str(self.value // 60).rjust(
+            2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
+
+
+class ResultShowSprite(pygame.sprite.Sprite):
+    def __init__(self, rect: pygame.Rect, nums_count):
+        super().__init__(all_sprites, end_screen_sprites)
+        self.nums_count = nums_count
+        self.rect = rect
+        # self.image = pygame.Surface((self.rect.width, self.rect.height))
+        # self.font_size = self.rect.width / nums_count
+        self.font = pygame.font.Font(None, self.rect.width // nums_count)
+        self.value = 0
+        self.image = self.font.render(str(self.value).rjust(
+            self.nums_count, "0"), 1, (255, 255, 255))
+
+    def set_value(self, value):
+        self.value = value
+        self.image = self.font.render(str(self.value).rjust(
+            self.nums_count, "0"), 1, (255, 255, 255))
 
 
 class BlockSprite(pygame.sprite.Sprite):

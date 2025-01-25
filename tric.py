@@ -73,7 +73,7 @@ class MainBoard:
         else:
             return
 
-        self.move(you_go_delta)
+        return self.move(you_go_delta)
 
     def undo(self):
         if len(self.history_items) != 0:
@@ -123,6 +123,9 @@ class MainBoard:
             for i, (x, y) in enumerate(self.check_poses):
                 exists = set()
                 rm_indexes = []
+                you_here = False
+                win_here = False
+                death_here = False
                 for item in self.new_board[y][x]:
                     if item not in exists:
                         exists.add(item)
@@ -140,7 +143,7 @@ class MainBoard:
                                      y * self.cell_size + self.top)
                         self.new_board[y][x] = []
                         break
-                    elif item.weak:
+                    elif item.weak and len(self.new_board[y][x]) > 1:
                         if item in list(map(lambda f: f[1], self.history_items[-1][1])):
                             self.history_items[-1][1].remove((item, x, y))
                         else:
@@ -148,9 +151,27 @@ class MainBoard:
                         item.die(x * self.cell_size + self.left,
                                  y * self.cell_size + self.top)
                         rm_indexes.append(i - len(rm_indexes))
+                    else:
+                        you_here = you_here or item.you
+                        win_here = win_here or item.win
+                        death_here = death_here or item.death
                 else:
                     for i in rm_indexes:
                         self.new_board[y][x].pop(i)
+                    if you_here and death_here:
+                        for i, item in enumerate(self.new_board[y][x]):
+                            if item.you:
+                                if item in list(map(lambda f: f[1], self.history_items[-1][1])):
+                                    self.history_items[-1][1].remove(
+                                        (item, x, y))
+                                else:
+                                    self.history_items[-1][0].append(
+                                        (item, x, y))
+                                item.die(x * self.cell_size + self.left,
+                                         y * self.cell_size + self.top)
+                                self.new_board[y][x].pop(i)
+                    elif you_here and win_here:
+                        return True
 
         self.board = self.new_board
         if self.intereaction:
@@ -159,7 +180,64 @@ class MainBoard:
         for sprite in item_sprites.sprites():
             if sprite not in self.sprites.values() and not sprite.die_soon:
                 sprite.kill()
-        print(self.history_items[-1])
+
+        if len(self.intereaction) != 0:
+            self.total_check()
+
+    def total_check(self):
+        for x in range(self.width):
+            for y in range(self.height):
+                exists = set()
+                rm_indexes = []
+                you_here = False
+                win_here = False
+                death_here = False
+                for i, item in enumerate(self.board[y][x]):
+                    if item not in exists:
+                        exists.add(item)
+                    else:
+                        self.history_items[-1][0].append((item, x, y))
+                        rm_indexes.append(i - len(rm_indexes))
+                        continue
+                    if item.sink and (len(self.board[y][x]) > 1):
+                        for item in self.board[y][x]:
+                            if item in list(map(lambda f: f[1], self.history_items[-1][1])):
+                                self.history_items[-1][1].remove((item, x, y))
+                            else:
+                                self.history_items[-1][0].append((item, x, y))
+                            item.die(x * self.cell_size + self.left,
+                                     y * self.cell_size + self.top)
+                        self.board[y][x] = []
+                        break
+                    elif item.weak and len(self.board[y][x]) > 1:
+                        if item in list(map(lambda f: f[1], self.history_items[-1][1])):
+                            self.history_items[-1][1].remove((item, x, y))
+                        else:
+                            self.history_items[-1][0].append((item, x, y))
+                        item.die(x * self.cell_size + self.left,
+                                 y * self.cell_size + self.top)
+                        rm_indexes.append(i - len(rm_indexes))
+                    else:
+                        you_here = you_here or item.you
+                        win_here = win_here or item.win
+                        death_here = death_here or item.death
+                else:
+                    for i in rm_indexes:
+                        self.board[y][x].pop(i)
+                    if you_here and death_here:
+                        for i, item in enumerate(self.board[y][x]):
+                            if item.you:
+                                if item in list(map(lambda f: f[1], self.history_items[-1][1])):
+                                    self.history_items[-1][1].remove(
+                                        (item, x, y))
+                                else:
+                                    self.history_items[-1][0].append(
+                                        (item, x, y))
+                                item.die(x * self.cell_size + self.left,
+                                         y * self.cell_size + self.top)
+                                self.board[y][x].pop(i)
+                    elif you_here and win_here:
+                        return True
 
     def generate_sprites(self):
         self.sprites = {}

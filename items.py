@@ -15,7 +15,7 @@ class MegaItems(Item):
         self.weak = False
         self.you = False
 
-    def set_deth(self, act: bool):
+    def set_death(self, act: bool):
         self.death = act
 
     def set_stop(self, act: bool):
@@ -23,6 +23,9 @@ class MegaItems(Item):
 
     def set_sink(self, act: bool):
         self.sink = act
+
+    def set_weak(self, act: bool):
+        self.weak = act
 
     def set_push(self, act: bool):
         self.push = act

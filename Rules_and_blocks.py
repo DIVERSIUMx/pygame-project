@@ -1,6 +1,6 @@
 import pygame
 from tric import Item
-from items import MegaItems, wall, rock, box, board, moris
+from items import MegaItems, wall, rock, box, board, moris, flag, skull
 from sprites import ItemSprite, load_image
 pygame.init()
 
@@ -17,7 +17,8 @@ colors = {
     'win': 'yellow',
     'weak': 'grey',
     'moris': 'gold',
-    'you': 'pink'
+    'you': 'pink',
+    'flag': 'gold'
 }
 
 
@@ -147,6 +148,9 @@ def checking_for_rule_existence(board):
         elif not (board[element[0][1]][element[0][0]] and board[element[1][1]][element[1][0]] and board[element[2][1]][
                 element[2][0]]):
             del ActiveRules[element]
+            if element[-1][-1] is not True:
+                exec(compile(
+                    f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(), 'exec'))
         elif board[element[0][1]][element[0][0]][0].name != element[-1][0] \
                 or board[element[1][1]][element[1][0]][0].name != element[-1][1] \
                 or board[element[2][1]][element[2][0]][0].name != element[-1][2]:

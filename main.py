@@ -3,11 +3,87 @@ import pygame
 from tric import MainBoard
 import items
 import Rules_and_blocks
+import sys
 from items import board
 from Initialization_levels import start_level
-from sprites import ItemSprite, FROZE, load_image, BlockSprite
-from config import clock, all_sprites
+from sprites import ItemSprite, FROZE, load_image, BlockSprite, SlideSprite, ResultShowSprite, TimeCounterSprite
+from config import clock, all_sprites, end_screen_sprites, item_sprites
 fps = 60
+
+
+def terminate():
+    pygame.quit()
+    sys.exit()
+
+
+def end_screen(end_img, time, move_count, undo_count):
+    transparent_val = 1
+    end_image = pygame.Surface(screen_size)
+    state = 0
+    screen_filter = pygame.Surface(screen_size)
+    screen_filter.fill((0, 0, 0))
+    screen_filter.set_alpha(transparent_val)
+    img = pygame.transform.scale(
+        load_image("you_win.png"), (600, 300))
+    rect = img.get_size()
+    slide = SlideSprite(img, (width, height // 2 -
+                              rect[1] // 2), (width // 2 - rect[1] // 2, height // 2 - rect[1] // 2), 0.5)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                terminate()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                state += 1
+        if state == 0:
+            end_screen_sprites.update()
+            if slide.cur_time >= slide.end_time:
+                state = 1
+        elif state == 1:
+            slide.rect.x, slide.rect.y = slide.end_pos
+            check_counter = ResultShowSprite(
+                pygame.Rect(200, height / 4, 500, 200), 5)
+            state = 2
+        elif state == 2:
+            check_counter.set_value(
+                check_counter.value + int((pygame.time.get_ticks() % 3) == 0))
+            if check_counter.value == move_count:
+                state = 3
+        elif state == 3:
+            true_check_counter = ResultShowSprite(
+                pygame.Rect(200, height / 4 * 2, 500, 200), 5)
+            state = 4
+        elif state == 4:
+            true_check_counter.set_value(
+                true_check_counter.value + int((pygame.time.get_ticks() % 3) == 0))
+            if true_check_counter.value == move_count + undo_count:
+                state = 5
+        elif state == 5:
+            time_counter = TimeCounterSprite(
+                pygame.Rect(200, height / 4 * 3, 500, 200))
+            state = 6
+        elif state == 6:
+            time_counter.set_value(
+                time_counter.value + int((pygame.time.get_ticks() % 3) == 0))
+            if time_counter.value >= time:
+                state = 8
+        elif state != 8:
+            terminate()
+
+        item_sprites.update()
+        screen.fill((0, 0, 0))
+        board.render(screen)
+        item_sprites.draw(screen)
+        screen.blit(screen_filter, (0, 0))
+        if transparent_val < 255:
+            transparent_val += 3
+        else:
+            transparent_val = 255
+        screen_filter.set_alpha(transparent_val)
+        end_screen_sprites.draw(screen)
+        clock.tick(fps)
+        pygame.display.flip()
+        print(time)
 
 
 def test(self: MainBoard):
@@ -23,12 +99,12 @@ def test(self: MainBoard):
     # self.rules[items.Box].weak = True
 
     self.board[5][8] = [items.rock]
-    self.board[1][1] = [Rules_and_blocks.ActiveBlocksObject("wall", self)]
+    self.board[1][1] = [Rules_and_blocks.ActiveBlocksObject("flag", self)]
     self.board[1][2] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[1][3] = [Rules_and_blocks.ActiveBlocksAction("push", self)]
+    self.board[1][3] = [Rules_and_blocks.ActiveBlocksAction("win", self)]
     self.board[2][8] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
     self.board[2][9] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[3][10] = [Rules_and_blocks.ActiveBlocksAction("sink", self)]
+    self.board[3][10] = [Rules_and_blocks.ActiveBlocksAction("death", self)]
     self.board[4][8] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
     self.board[5][10] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
     self.board[2][3] = [Rules_and_blocks.ActiveBlocksObject("moris", self)]
@@ -48,43 +124,45 @@ def test(self: MainBoard):
 
 
 if __name__ == "__main__":
-    sup = ItemSprite("test", load_image("wall.png"))
-    sup.rect.x = 500
-    test(board)
     pygame.init()
-    start_level("test3")
-    # Rules_and_blocks.get_rules()
-    print(board.board)
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
-    BlockSprite((0, height), width)
+    # Rules_and_blocks.get_rules()
+    print(board.board)
 
+    time = 0
+    undo_count = 0
     running = True
+    BlockSprite((0, height), width)
+    test(board)
+    start_level("test3")
     board.generate_sprites()
-    while running:
+    end_image = pygame.Surface(screen_size)
+    end_image.blit(screen, (0, 0))
+    while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                terminate()
             elif not FROZE[0] and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_z:
                     board.undo()
-                print(
-                    items.wall.get_rules(),
-                    "wall", "\n",
-                    items.box.get_rules(),
-                    "box", "\n",
-                    items.rock.get_rules(),
-                    "rock",
-                )
-                board.you_go(event.key)
+                    undo_count += 1
+                else:
+                    if board.you_go(event.key):
+                        print("YOU WIN")
+                        running = False
+                        end_image.blit(screen, (0, 0))
+
+        if not running:
+            break
 
         screen.fill((0, 0, 0))
         board.render(screen)
 
-        clock.tick(fps)
+        time += clock.tick(fps) / 1000
         all_sprites.update()
         all_sprites.draw(screen)
         pygame.display.flip()
-        print(FROZE)
 
-    pygame.quit()
+    end_screen(end_image, int(time), len(board.history_items), undo_count)
