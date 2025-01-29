@@ -90,6 +90,7 @@ def main(level=0):
 
 
 def main_select():
+    fps = 8
     pygame.init()
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
