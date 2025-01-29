@@ -6,6 +6,9 @@ particle_sprites = pygame.sprite.Group()
 block_sprites = pygame.sprite.Group()
 end_screen_sprites = pygame.sprite.Group()
 
+all_sprites_to_level = pygame.sprite.Group()
+select_level_sprites = pygame.sprite.Group()
+
 clock = pygame.time.Clock()
 
 global froze

@@ -1,9 +1,9 @@
 import pygame
 import os
 import sys
-from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze
+from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze, select_level_sprites, all_sprites_to_level
 import random
-
+pygame.init()
 FROZE = [False]
 
 
@@ -118,9 +118,6 @@ class ItemSprite(pygame.sprite.Sprite):
     def copy(self):
         return ItemSprite(self.filename, self.im, self.colums, self.rows)
 
-    def q_copy(self):
-        return QuiteCopy(ItemSprite,  self.filename, self.im, self.colums, self.rows)
-
     def move(self, pos):
         global FROZE
         self.move_stage = 0
@@ -169,3 +166,10 @@ class ParticleSprite(pygame.sprite.Sprite):
             self.kill()
         else:
             self.live_time -= 1
+
+
+class SelectSprite(pygame.sprite.Sprite):
+    def __init__(self, file):
+        super().__init__(all_sprites_to_level, select_level_sprites)
+        self.file = file
+        self.rect = self.file.get_rect()

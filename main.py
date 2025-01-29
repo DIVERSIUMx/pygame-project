@@ -6,8 +6,10 @@ import Rules_and_blocks
 import sys
 from items import board
 from Initialization_levels import start_level
-from sprites import ItemSprite, FROZE, load_image, BlockSprite, SlideSprite, ResultShowSprite, TimeCounterSprite
+from sprites import ItemSprite, FROZE, load_image, BlockSprite, SlideSprite, ResultShowSprite, TimeCounterSprite, all_sprites_to_level
 from config import clock, all_sprites, end_screen_sprites, item_sprites
+import level_selection
+
 fps = 60
 
 
@@ -17,6 +19,7 @@ def terminate():
 
 
 def end_screen(end_img, time, move_count, undo_count):
+    fps = 60
     transparent_val = 1
     end_image = pygame.Surface(screen_size)
     state = 0
@@ -123,10 +126,11 @@ def test(self: MainBoard):
     print(self.board)
 
 
-if __name__ == "__main__":
-    pygame.init()
-    screen_size = width, height = board.get_screen_size()
-    screen = pygame.display.set_mode(screen_size)
+def main(level: str):
+    fps = 60
+    start_level(level)
+    Rules_and_blocks.get_rules()
+    print(board.board)
     # Rules_and_blocks.get_rules()
     print(board.board)
 
@@ -134,7 +138,7 @@ if __name__ == "__main__":
     undo_count = 0
     running = True
     BlockSprite((0, height), width)
-    test(board)
+    # test(board)
     start_level("test3")
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)
@@ -166,3 +170,52 @@ if __name__ == "__main__":
         pygame.display.flip()
 
     end_screen(end_image, int(time), len(board.history_items), undo_count)
+
+
+def main_select():
+    fps = 8
+    margin = 130
+    level_board = level_selection.LevelBoard(margin)
+    level_board.render()
+    running = True
+    outline = level_selection.OutlineRect(margin)
+    outline.update(screen)
+
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d:
+                    level_board.step((1, 0))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_a:
+                    level_board.step((-1, 0))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_w:
+                    level_board.step((0, -1))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_s:
+                    level_board.step((0, 1))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                    x, y = pos = level_board.pos_now
+                    level = (x + 1) + y * level_board.width
+                    main(f'level-{level}')
+                    return None
+        screen.fill((0, 0, 0))
+        outline.update(screen)
+        clock.tick(fps)
+        all_sprites_to_level.update()
+        all_sprites_to_level.draw(screen)
+        pygame.display.flip()
+    pygame.quit()
+
+
+if __name__ == '__main__':
+    fps = 60
+    pygame.init()
+    screen_size = width, height = board.get_screen_size()
+    screen = pygame.display.set_mode(screen_size)
+    main_select()
