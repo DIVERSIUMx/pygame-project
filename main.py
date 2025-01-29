@@ -6,7 +6,8 @@ import Rules_and_blocks
 from items import board
 from Initialization_levels import start_level
 from sprites import ItemSprite, FROZE, load_image
-from config import clock, all_sprites
+from config import clock, all_sprites, all_sprites_to_level
+import level_selection
 
 fps = 60
 
@@ -88,5 +89,48 @@ def main(level=0):
     pygame.quit()
 
 
+def main_select():
+    pygame.init()
+    screen_size = width, height = board.get_screen_size()
+    screen = pygame.display.set_mode(screen_size)
+    margin = 130
+    level_board = level_selection.LevelBoard(margin)
+    level_board.render()
+    running = True
+    outline = level_selection.OutlineRect(margin)
+    outline.update(screen)
+
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_d:
+                    level_board.step((1, 0))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_a:
+                    level_board.step((-1, 0))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_w:
+                    level_board.step((0, -1))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_s:
+                    level_board.step((0, 1))
+                    outline.change_cell(level_board.pos_now)
+                if event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                    x, y = pos = level_board.pos_now
+                    level = (x + 1) + y * level_board.width
+                    main(f'level-{level}')
+                    return None
+        screen.fill((0, 0, 0))
+        outline.update(screen)
+        clock.tick(fps)
+        all_sprites_to_level.update()
+        all_sprites_to_level.draw(screen)
+        pygame.display.flip()
+    pygame.quit()
+
+
 if __name__ == '__main__':
-    pass
+    main_select()

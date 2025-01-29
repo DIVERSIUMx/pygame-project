@@ -129,9 +129,8 @@ def main_select():
         all_sprites_to_level.update()
         all_sprites_to_level.draw(screen)
         pygame.display.flip()
-
     pygame.quit()
 
 
 if __name__ == "__main__":
-    main_select()
+    start = None
