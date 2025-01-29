@@ -7,7 +7,7 @@ fps = 8
 
 
 def load_image(*filename):
-    path = os.path.join("data", "sprite\select-level", *filename)
+    path = os.path.join("data", "sprite", "select-level", *filename)
     return pygame.image.load(path)
 
 
