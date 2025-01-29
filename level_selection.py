@@ -90,7 +90,7 @@ class OutlineRect:
         self.counter = 0 if self.counter == 1 else 1
 
 
-def main():
+def main_select():
     pygame.init()
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
@@ -100,6 +100,7 @@ def main():
     running = True
     outline = OutlineRect(margin)
     outline.update(screen)
+
     while running:
 
         for event in pygame.event.get():
@@ -122,8 +123,6 @@ def main():
                     x, y = pos = level_board.pos_now
                     level = (x + 1) + y * level_board.width
                     main(f'level-{level}')
-
-
         screen.fill((0, 0, 0))
         outline.update(screen)
         clock.tick(fps)
@@ -135,4 +134,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main_select()
