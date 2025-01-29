@@ -7,6 +7,7 @@ from items import board
 from Initialization_levels import start_level
 from sprites import ItemSprite, FROZE, load_image
 from config import clock, all_sprites
+
 fps = 60
 
 
@@ -47,11 +48,11 @@ def test(self: MainBoard):
     print(self.board)
 
 
-if __name__ == "__main__":
+def main(level=0):
     sup = ItemSprite("test", load_image("wall.png"))
     sup.rect.x = 500
     pygame.init()
-    start_level("test4")
+    start_level(level)
     Rules_and_blocks.get_rules()
     print(board.board)
     screen_size = width, height = board.get_screen_size()
@@ -85,3 +86,7 @@ if __name__ == "__main__":
         pygame.display.flip()
 
     pygame.quit()
+
+
+if __name__ == '__main__':
+    main()

@@ -125,7 +125,7 @@ def new_rule(
                            (first_name, is_name, finish_name, object_object)))
 
 
-'''new_rule(first_cord=(1, 1), first_name='wall', is_cord=(2, 1), finish_cord=(3, 1), finish_name='push')
+'''new_rule(first_cord=(2, 8), first_name='moris', is_cord=(2, 9), finish_cord=(2, 10), finish_name='you')
 print(ActiveRules.get_rules(), 1)'''
 
 
