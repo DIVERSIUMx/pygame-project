@@ -3,7 +3,7 @@ from items import test_board, board
 import Rules_and_blocks
 import items
 from ast import literal_eval
-from items import MegaItems, wall, rock, box, board, moris
+from items import MegaItems, wall, rock, box, board, moris, flag, wall, rock, box, board, moris, flag, skull
 
 
 def start_level(name: str):
@@ -28,6 +28,7 @@ def start_level(name: str):
         else:
             board.board[y][x] = [globals()[f'{el[0]}']]
     for el in start_rules:
+
         print(el[3][3])
         Rules_and_blocks.new_rule(
             first_cord=el[0], is_cord=el[1], finish_cord=el[2], first_name=el[3][0], finish_name=el[3][2],
@@ -48,8 +49,11 @@ def new_level(name: str, blocks: list):
     for el in blocks:
         x, y = el[1]
         test_board.board[y][x] = el[0]
-        print(issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS), eval(
-            el[0]).__class__, 'log kit')
+        print(
+            issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS), eval(
+                el[0]
+            ).__class__, 'log kit'
+        )
         if issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS):
             list_is.append((x, y))
     print(test_board.board, 'test board')
@@ -60,7 +64,8 @@ def new_level(name: str, blocks: list):
             if test_board.board[y][x - 1] and test_board.board[y][x + 1]:
                 print(
                     issubclass(
-                        test_board.board[y][x - 1].__class__, Rules_and_blocks.ActiveBlocksObject),
+                        test_board.board[y][x - 1].__class__, Rules_and_blocks.ActiveBlocksObject
+                    ),
                     issubclass(
                         test_board.board[y][x +
                                             1].__class__, Rules_and_blocks.ActiveBlocksAction
@@ -69,10 +74,12 @@ def new_level(name: str, blocks: list):
                 try:
                     if issubclass(
                             eval(
-                                test_board.board[y][x - 1]).__class__, Rules_and_blocks.ActiveBlocksObject
+                                test_board.board[y][x - 1]
+                            ).__class__, Rules_and_blocks.ActiveBlocksObject
                     ) and issubclass(
                         eval(
-                            test_board.board[y][x + 1]).__class__, Rules_and_blocks.ActiveBlocksAction
+                            test_board.board[y][x + 1]
+                        ).__class__, Rules_and_blocks.ActiveBlocksAction
                     ):
                         print(1)
                         first_name = eval(test_board.board[y][x - 1]).name
@@ -84,7 +91,8 @@ def new_level(name: str, blocks: list):
                         print(Rules_and_blocks.ActiveRules.get_rules())
                     elif issubclass(
                             eval(
-                                test_board.board[y][x - 1]).__class__, Rules_and_blocks.ActiveBlocksObject
+                                test_board.board[y][x - 1]
+                            ).__class__, Rules_and_blocks.ActiveBlocksObject
                     ) and issubclass(
                         eval(test_board.board[y][x + 1]).__class__,
                         Rules_and_blocks.ActiveBlocksObject
@@ -103,10 +111,12 @@ def new_level(name: str, blocks: list):
                 try:
                     if issubclass(
                             eval(
-                                test_board.board[y - 1][x]).__class__, Rules_and_blocks.ActiveBlocksObject
+                                test_board.board[y - 1][x]
+                            ).__class__, Rules_and_blocks.ActiveBlocksObject
                     ) and issubclass(
                         eval(
-                            test_board.board[y + 1][x]).__class__, Rules_and_blocks.ActiveBlocksAction
+                            test_board.board[y + 1][x]
+                        ).__class__, Rules_and_blocks.ActiveBlocksAction
                     ):
 
                         first_name = eval(test_board.board[y - 1][x]).name
@@ -117,7 +127,8 @@ def new_level(name: str, blocks: list):
                         )
                     elif issubclass(
                             eval(
-                                test_board.board[y - 1][x]).__class__, Rules_and_blocks.ActiveBlocksObject
+                                test_board.board[y - 1][x]
+                            ).__class__, Rules_and_blocks.ActiveBlocksObject
                     ) and issubclass(
                         eval(test_board.board[y + 1][x]).__class__,
                         Rules_and_blocks.ActiveBlocksObject
@@ -137,9 +148,20 @@ def new_level(name: str, blocks: list):
     print(star_rules)
     cur.execute(
         f"""INSERT INTO levels(name, blocks, start_rules) VALUES(?, ?, ?)""", (name, str(
-            blocks), str(star_rules))
+            blocks
+        ), str(star_rules))
     )
     con.commit()
 
 
-# new_level( 'test3', [['wall', [3, 5], False], ['moris', [4, 9], False], ['box', [5, 5], False], ['Rules_and_blocks.ActiveBlocksAction("you", board)', [1, 5], True], ['Rules_and_blocks.ActiveBlocksObject("box", board)', [1, 3], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [1, 4], True]])
+'''new_level('level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
+                    ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 1], True],
+                    ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 1], True],
+                    ['Rules_and_blocks.ActiveBlocksAction("you", board)', [7, 1], True],
+
+                    ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [5, 4], True],
+                    ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 4], True],
+                    ['Rules_and_blocks.ActiveBlocksAction("win", board)', [7, 4], True]]
+
+          )
+'''
