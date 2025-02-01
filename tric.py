@@ -94,6 +94,9 @@ class MainBoard:
                 sprite.kill()
             self.generate_sprites()
 
+    def clear(self):
+        self.board = [[list()] * self.width for _ in range(self.height)]
+
     def move(self, you_go_delta):
         self.history_items.append(([], []))
         self.move_sprites = []

@@ -45,6 +45,10 @@ def end_screen(end_img, time, move_count, undo_count):
                 terminate()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 state += 1
+                break
+            elif event.type == pygame.KEYDOWN:
+                state += 1
+                break
         if state == 0:
             end_screen_sprites.update()
             if slide.cur_time >= slide.end_time:
@@ -68,7 +72,8 @@ def end_screen(end_img, time, move_count, undo_count):
             state = 4
         elif state == 4:
             true_check_counter.set_value(
-                true_check_counter.value + int((pygame.time.get_ticks() % 3) == 0)
+                true_check_counter.value +
+                int((pygame.time.get_ticks() % 3) == 0)
             )
             if true_check_counter.value == move_count + undo_count:
                 state = 5
@@ -84,6 +89,11 @@ def end_screen(end_img, time, move_count, undo_count):
             if time_counter.value >= time:
                 state = 8
         elif state != 8:
+            for sprite in end_screen_sprites.sprites():
+                sprite.kill()
+            for sprite in item_sprites.sprites():
+                sprite.kill()
+            board.clear()
             main_exit()
             return None
 
@@ -236,12 +246,15 @@ def main_start():
     fps = 3
     running = True
     screen.fill((0, 0, 0))
-    font_title = pygame.font.Font(os.path.join("data", "font", "NEOPIXEL.otf"), 100)
+    font_title = pygame.font.Font(os.path.join(
+        "data", "font", "NEOPIXEL.otf"), 100)
     text_title = font_title.render("Жизнь для правил", True, 'white')
     text_x = width // 2 - text_title.get_width() // 2
     screen.blit(text_title, (text_x, 200))
-    fonr_start = pygame.font.Font(os.path.join("data", "font", "NEOPIXEL.otf"), 30)
-    test_start = fonr_start.render("нажмите любую кнопку, чтобы продолжить", True, 'white')
+    fonr_start = pygame.font.Font(
+        os.path.join("data", "font", "NEOPIXEL.otf"), 30)
+    test_start = fonr_start.render(
+        "нажмите любую кнопку, чтобы продолжить", True, 'white')
     show = True
     while running:
         if show:
@@ -249,7 +262,8 @@ def main_start():
             show = False
         else:
             show = True
-            pygame.draw.rect(screen, 'black', ((text_x, 600), (text_x + 700, 1000)))
+            pygame.draw.rect(
+                screen, 'black', ((text_x, 600), (text_x + 700, 1000)))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
@@ -268,14 +282,17 @@ def main_exit():
     fps = 3
     running = True
     screen.fill((0, 0, 0))
-    font_title = pygame.font.Font(os.path.join("data", "font", "NEOPIXEL.otf"), 100)
+    font_title = pygame.font.Font(os.path.join(
+        "data", "font", "NEOPIXEL.otf"), 100)
     text_title = font_title.render("Хотите продолжить?", True, 'white')
     text_1 = font_title.render("esc - выход", True, 'white')
     text_x = width // 2 - text_title.get_width() // 2
     screen.blit(text_title, (text_x, 200))
     screen.blit(text_1, (text_x + 100, 300))
-    fonr_start = pygame.font.Font(os.path.join("data", "font", "NEOPIXEL.otf"), 30)
-    test_start = fonr_start.render("Чтобы продолжить, нажмите любую кнопку", True, 'white')
+    fonr_start = pygame.font.Font(
+        os.path.join("data", "font", "NEOPIXEL.otf"), 30)
+    test_start = fonr_start.render(
+        "Чтобы продолжить, нажмите любую кнопку", True, 'white')
     show = True
     while running:
         if show:
@@ -283,7 +300,8 @@ def main_exit():
             show = False
         else:
             show = True
-            pygame.draw.rect(screen, 'black', ((text_x, 600), (text_x + 700, 1000)))
+            pygame.draw.rect(
+                screen, 'black', ((text_x, 600), (text_x + 700, 1000)))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
