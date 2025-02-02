@@ -162,7 +162,7 @@ def main(level: str):
     undo_count = 0
     running = True
     BlockSprite((0, height), width)
-    # test(board)
+    test(board)
     start_level(level)
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)
