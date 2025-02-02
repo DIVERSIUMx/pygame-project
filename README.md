@@ -8,6 +8,7 @@
   + [Game mechanics](#game-mechanics)
   + [Game goals](#game-goals)
 + [About this project](#about-this-project)
+  + [Code](#code)
   + [Authors](#authors)
 -----
 ## **About this game**
@@ -78,6 +79,42 @@ The goal is to make a winning combination and/or fulfill its conditions.
 ## About this project
 This project was created during training at [**Yandex Lyceum**](https://lyceum.yandex.ru/)
 
+------
+### Code
+Our code is quite heavy, here is an example of checking for creating a new rule.
+   
+`element[0]` - *a block of text on which some action has been performed*   
+`ActiveBlocks...` - *classes of text blocks*  
+`board` - *playing field*   
+`new_rule` - *function to create a new rule*     
+``` python
+        if isinstance(element[0], ActiveBlocksAction):  # Проверяет на то, что блок текста являтся дейсвтием
+            cord = x, y = element[1]
+            if x >= 2:  # проверка новых правил по x
+                if board[y][x - 1] and board[y][x - 2]:
+                    if issubclass(board[y][x - 1][0].__class__, ActiveBlocksIS) and issubclass(
+                            board[y][x - 2][0].__class__,
+                            ActiveBlocksObject
+                    ):  # проверка, что соседнии блоки составляют правило
+                        first_name = board[y][x - 2][0].name
+                        finish_name = board[y][x][0].name
+                        new_rule(
+                            first_cord=(x - 2, y), first_name=first_name, is_cord=(x - 1, y), finish_cord=cord,
+                            finish_name=finish_name
+                        )
+            if y >= 2:  # проверка новых правил по y
+                if board[y - 1][x] and board[y - 2][x]:
+                    if issubclass(board[y - 1][x][0].__class__, ActiveBlocksIS) and issubclass(
+                            board[y - 2][x][0].__class__,
+                            ActiveBlocksObject
+                    ):  # проверка, что соседнии блоки составляют правило
+                        first_name = board[y - 2][x][0].name
+                        finish_name = board[y][x][0].name
+                        new_rule(
+                            first_cord=(x, y - 2), first_name=first_name, is_cord=(x, y - 1), finish_cord=cord,
+                            finish_name=finish_name
+                        )
+```
 ------
 ### Authors   
 [**DIVERSIUM(Konstantin)**](https://github.com/DIVERSIUMx) and [**CHERT(Ilya)**](https://github.com/CHERTvsINTERNET)
