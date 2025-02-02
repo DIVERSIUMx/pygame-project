@@ -1,7 +1,7 @@
 import pygame
 import os
 import sys
-from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze, select_level_sprites, all_sprites_to_level
+from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze, select_level_sprites, all_sprites_to_level, move_sound, destroy_sound
 import random
 pygame.init()
 FROZE = [False]
@@ -125,6 +125,7 @@ class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
         self.delta_y = (pos[1] - self.rect.y) / 7
         FROZE[0] = True
         self.moving = True
+        # move_sound.play()
 
     def die(self):  # Смерть, спрайт "Рассыпается"
         if self.moving:
@@ -135,6 +136,7 @@ class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
                     ParticleSprite(self.image.subsurface(
                         x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10), random.randint(-10, 10), 180)
             FROZE[0] = False
+            destroy_sound.play()
             self.kill()
 
 

@@ -151,15 +151,12 @@ def main(level: str):
     Rules_and_blocks.get_rules()
     Rules_and_blocks.checking_for_rule_existence(board.board)
     print(board.board)
-    # Rules_and_blocks.get_rules()
-    print(board.board)
 
     time = 0
     undo_count = 0
     running = True
     BlockSprite((0, height), width)
     test(board)
-
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)
     end_image.blit(screen, (0, 0))
