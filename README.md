@@ -1,4 +1,4 @@
-# **Name of the game**
+# **life for the rules**
 ![Poster](https://github.com/DIVERSIUMx/pygame-project/blob/main/chert%20and%20diversium%20(3).png)
 ----
 [![Python](https://img.shields.io/badge/Python-3.11-gold?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
