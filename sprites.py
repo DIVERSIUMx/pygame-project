@@ -15,7 +15,7 @@ def load_image(*filename):
         return pygame.image.load(os.path.join("data", "sprite", "ohno.png"))
 
 
-class SlideSprite(pygame.sprite.Sprite):
+class SlideSprite(pygame.sprite.Sprite):  # Спрайт для плавного сдвига
     def __init__(self, image, start_pos, end_pos, time):
         super().__init__(all_sprites, end_screen_sprites)
         self.end_pos = end_pos
@@ -33,6 +33,7 @@ class SlideSprite(pygame.sprite.Sprite):
             self.cur_time += 1
 
 
+# Спрайт для отображения времени в формате мм:сс
 class TimeCounterSprite(pygame.sprite.Sprite):
     def __init__(self, rect: pygame.Rect):
         super().__init__(all_sprites, end_screen_sprites)
@@ -48,13 +49,11 @@ class TimeCounterSprite(pygame.sprite.Sprite):
             2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
 
 
-class ResultShowSprite(pygame.sprite.Sprite):
+class ResultShowSprite(pygame.sprite.Sprite):  # Спрайт отображения результата
     def __init__(self, rect: pygame.Rect, nums_count):
         super().__init__(all_sprites, end_screen_sprites)
         self.nums_count = nums_count
         self.rect = rect
-        # self.image = pygame.Surface((self.rect.width, self.rect.height))
-        # self.font_size = self.rect.width / nums_count
         self.font = pygame.font.Font(None, self.rect.width // nums_count)
         self.value = 0
         self.image = self.font.render(str(self.value).rjust(
@@ -66,7 +65,7 @@ class ResultShowSprite(pygame.sprite.Sprite):
             self.nums_count, "0"), 1, (255, 255, 255))
 
 
-class BlockSprite(pygame.sprite.Sprite):
+class BlockSprite(pygame.sprite.Sprite):  # Спрайт блокировки частиц
     def __init__(self, pos, width):
         super().__init__(all_sprites, block_sprites)
         self.image = pygame.Surface((width, 30))
@@ -75,7 +74,7 @@ class BlockSprite(pygame.sprite.Sprite):
         self.rect.y = pos[1]
 
 
-class ItemSprite(pygame.sprite.Sprite):
+class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
     def __init__(self, filename, file, colums=1, rows=1):
         self.die_soon = False
         self.moving = False
@@ -118,7 +117,7 @@ class ItemSprite(pygame.sprite.Sprite):
     def copy(self):
         return ItemSprite(self.filename, self.im, self.colums, self.rows)
 
-    def move(self, pos):
+    def move(self, pos):  # Задаётся позиция для перемешения
         global FROZE
         self.move_stage = 0
         self.target = pos
@@ -127,20 +126,20 @@ class ItemSprite(pygame.sprite.Sprite):
         FROZE[0] = True
         self.moving = True
 
-    def die(self):
+    def die(self):  # Смерть, спрайт "Рассыпается"
         if self.moving:
             self.die_soon = True
         else:
             for x in range(8):
                 for y in range(8):
                     ParticleSprite(self.image.subsurface(
-                        x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10), random.randint(-10, 10), 0.98, 180)
+                        x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10), random.randint(-10, 10), 180)
             FROZE[0] = False
             self.kill()
 
 
-class ParticleSprite(pygame.sprite.Sprite):
-    def __init__(self, image, x, y, vecx, vecy, scale_multiplicator, live_time):
+class ParticleSprite(pygame.sprite.Sprite):  # Спрайт частици
+    def __init__(self, image, x, y, vecx, vecy, live_time):
         super().__init__(all_sprites, particle_sprites)
         self.collided = False
         self.image = image
@@ -149,15 +148,14 @@ class ParticleSprite(pygame.sprite.Sprite):
         self.rect.y = y
         self.dx = vecx
         self.dy = vecy
-        self.scale_factor = scale_multiplicator
         self.live_time = live_time
 
     def update(self):
         self.rect = self.rect.move(self.dx, self.dy)
         if self.dy < 10:
             self.dy += 0.4
-        # self.image = pygame.transform.scale(self.image, (self.image.get_width(
-        # ) * self.scale_factor, self.image.get_height() * self.scale_factor))
+
+        # Частица может отпрыгнуть с шансом 50% если ещё не отпрагнула
         if not self.collided and pygame.sprite.spritecollideany(self, block_sprites) and self.dy > 0:
             if random.randint(0, 1):
                 self.dy = -self.dy

@@ -117,13 +117,11 @@ def end_screen(end_img, time, move_count, undo_count):
 def test(self: MainBoard):
     """В эту функцию пихать все для тестов"""
     self.board[4][4] = [items.moris]
-    self.rules[items.Moris].you = True
     # self.rules[items.Moris].weak = False
 
     self.board[6][5] = [items.flag]
     self.board[4][5] = [items.skull]
     self.board[5][5] = [items.box]
-    self.rules[items.Box].set_colide_type(90)
     # self.rules[items.Box].weak = True
 
     self.board[5][8] = [items.rock]
@@ -138,15 +136,8 @@ def test(self: MainBoard):
     self.board[2][3] = [Rules_and_blocks.ActiveBlocksObject("moris", self)]
     self.board[2][4] = [Rules_and_blocks.ActiveBlocksIS(self)]
     self.board[3][5] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
-    # self.rules[Rules_and_blocks.ActiveBlocksObject].set_colide_type(90)
-    self.rules[Rules_and_blocks.ActiveBlocksObject].push = True
-    # self.rules[Rules_and_blocks.ActiveBlocksIS].set_colide_type(90)
-    self.rules[Rules_and_blocks.ActiveBlocksIS].push = True
-    # self.rules[Rules_and_blocks.ActiveBlocksAction].set_colide_type(90)
-    self.rules[Rules_and_blocks.ActiveBlocksAction].push = True
     self.board[5][10] = [items.Water(self)]
     # self.rules[items.Water].silk = True
-    self.rules[items.Wall].set_colide_type(100)
     print(issubclass(items.Box(self).__class__, items.MegaItems))
     print(self.board)
 
@@ -167,7 +158,7 @@ def main(level: str):
     undo_count = 0
     running = True
     BlockSprite((0, height), width)
-    # test(board)
+    test(board)
 
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)

@@ -1,6 +1,6 @@
 import pygame
 from sprites import ItemSprite, load_image
-from tric import Item, Rule, MainBoard
+from tric import Item, MainBoard
 
 
 class MegaItems(Item):  # Класс, к которому принадлежат все элементы
@@ -63,49 +63,43 @@ class Moris(MegaItems):
     sprite = ItemSprite("moris", load_image("moris.png"), 8)
     name = "Moris"
     color = (50, 250, 255)
-    rule = Rule()
 
 
 class Box(MegaItems):
     sprite = ItemSprite("box", load_image("box.png"))
     name = "Box"
     color = (150, 150, 0)
-    rule = Rule()
 
 
 class Wall(MegaItems):
     sprite = ItemSprite("wall", load_image("wall.png"))
     name = "Wall"
     color = (50, 50, 255)
-    rule = Rule()
 
 
 class Rock(MegaItems):
     sprite = ItemSprite("water", load_image("rock.png"))
     name = "Rock"
     color = 'orange'
-    rule = Rule()
 
 
 class Water(MegaItems):
     sprite = ItemSprite("water", load_image("water.png"), 6)
     name = "Water"
     color = (0, 0, 255)
-    rule = Rule()
 
 
 class Flag(MegaItems):
     sprite = ItemSprite("flag", load_image("flag.png"), 6)
     name = "Flag"
     color = (0, 0, 255)
-    rule = Rule()
 
 
 class Skull(MegaItems):
     sprite = ItemSprite("skull", load_image("skull.png"), 4)
     name = "Flag"
     color = (0, 0, 255)
-    rule = Rule()
+
 
 # Игровые доски
 board = MainBoard(16, 10, 80)
