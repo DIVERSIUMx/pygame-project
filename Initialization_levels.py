@@ -6,7 +6,7 @@ from ast import literal_eval
 from items import MegaItems, wall, rock, box, board, moris, flag, wall, rock, box, board, moris, flag, skull
 
 
-def start_level(name: str):
+def start_level(name: str):  # Открытие уровня из бд
     con = sqlite3.connect('game.sqlite')
     cur = con.cursor()
     blocks = cur.execute(
@@ -23,12 +23,10 @@ def start_level(name: str):
     for el in blocks:
         x, y = el[1]
         if el[2]:
-
             board.board[y][x] = [eval(el[0])]
         else:
             board.board[y][x] = [globals()[f'{el[0]}']]
-    for el in start_rules:
-
+    for el in start_rules:  # Создание стартовых правил
         print(el[3][3])
         Rules_and_blocks.new_rule(
             first_cord=el[0], is_cord=el[1], finish_cord=el[2], first_name=el[3][0], finish_name=el[3][2],
@@ -43,7 +41,7 @@ def start_level(name: str):
 # if object is text (rules_blocks) - class(name) (Rules_and_blocks.ActiveBlocksIS(name, test_board.board))
 
 
-def new_level(name: str, blocks: list):
+def new_level(name: str, blocks: list):  # Создание нового уровня в бд через код
     star_rules = list()
     list_is = list()
     for el in blocks:
@@ -80,7 +78,7 @@ def new_level(name: str, blocks: list):
                         eval(
                             test_board.board[y][x + 1]
                         ).__class__, Rules_and_blocks.ActiveBlocksAction
-                    ):
+                    ):  # проверка, что соседнии блоки составляют правило
                         print(1)
                         first_name = eval(test_board.board[y][x - 1]).name
                         finish_name = eval(test_board.board[y][x + 1]).name
@@ -96,7 +94,7 @@ def new_level(name: str, blocks: list):
                     ) and issubclass(
                         eval(test_board.board[y][x + 1]).__class__,
                         Rules_and_blocks.ActiveBlocksObject
-                    ):
+                    ):  # проверка, что соседнии блоки составляют правило
                         first_name = eval(test_board.board[y][x - 1]).name
                         finish_name = eval(test_board.board[y][x + 1]).name
                         star_rules.append(
@@ -117,7 +115,7 @@ def new_level(name: str, blocks: list):
                         eval(
                             test_board.board[y + 1][x]
                         ).__class__, Rules_and_blocks.ActiveBlocksAction
-                    ):
+                    ):  # проверка, что соседнии блоки составляют правило
 
                         first_name = eval(test_board.board[y - 1][x]).name
                         finish_name = eval(test_board.board[y + 1][x]).name
@@ -132,7 +130,7 @@ def new_level(name: str, blocks: list):
                     ) and issubclass(
                         eval(test_board.board[y + 1][x]).__class__,
                         Rules_and_blocks.ActiveBlocksObject
-                    ):
+                    ):  # проверка, что соседнии блоки составляют правило
                         finish_name = eval(test_board.board[y - 1][x]).name
                         first_name = eval(test_board.board[y + 1][x]).name
                         star_rules.append(
@@ -154,7 +152,8 @@ def new_level(name: str, blocks: list):
     con.commit()
 
 
-'''new_level('level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
+def add_new_level():  # Создание новго уровня
+    new_level('level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
                     ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 1], True],
                     ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 1], True],
                     ['Rules_and_blocks.ActiveBlocksAction("you", board)', [7, 1], True],
@@ -164,4 +163,3 @@ def new_level(name: str, blocks: list):
                     ['Rules_and_blocks.ActiveBlocksAction("win", board)', [7, 4], True]]
 
           )
-'''

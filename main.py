@@ -22,6 +22,7 @@ def terminate():
 
 
 def end_screen(end_img, time, move_count, undo_count):
+    Rules_and_blocks.checking_for_rule_existence(board.board)
     screen.fill(0)
     fps = 60
     transparent_val = 1
@@ -110,7 +111,7 @@ def end_screen(end_img, time, move_count, undo_count):
         end_screen_sprites.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
-        print(time)
+        '''print(time)'''
 
 
 def test(self: MainBoard):
@@ -151,9 +152,13 @@ def test(self: MainBoard):
 
 
 def main(level: str):
+    board.clear()
+    Rules_and_blocks.clear_rules()
+    Rules_and_blocks.checking_for_rule_existence(board.board)
     fps = 60
     start_level(level)
     Rules_and_blocks.get_rules()
+    Rules_and_blocks.checking_for_rule_existence(board.board)
     print(board.board)
     # Rules_and_blocks.get_rules()
     print(board.board)
@@ -163,12 +168,13 @@ def main(level: str):
     running = True
     BlockSprite((0, height), width)
     # test(board)
-    start_level(level)
+
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)
     end_image.blit(screen, (0, 0))
     while True:
         for event in pygame.event.get():
+            Rules_and_blocks.get_rules()
             if event.type == pygame.QUIT:
                 running = False
                 terminate()
@@ -198,9 +204,9 @@ def main(level: str):
     end_screen(end_image, int(time), len(board.history_items), undo_count)
 
 
-def main_select():
+def main_select():  # Выбор уровня
     fps = 8
-    margin = 130
+    margin = 130  # Отступы
     level_board = level_selection.LevelBoard(margin)
     level_board.render()
     running = True
@@ -212,8 +218,10 @@ def main_select():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    # Уход на уровень выше ( стартовое окно )
                     main_start()
                     return None
+                # Перемещение по меню
                 if event.key == pygame.K_d:
                     level_board.step((1, 0))
                     outline.change_cell(level_board.pos_now)
@@ -229,12 +237,13 @@ def main_select():
                 if event.key == pygame.K_e or event.key == pygame.K_RETURN:
                     x, y = pos = level_board.pos_now
                     level = (x + 1) + y * level_board.width
+                    # запуск уровня
                     main(f'level-{level}')
                     return None
         screen.fill((0, 0, 0))
         outline.update(screen)
         clock.tick(fps)
-        all_sprites_to_level.update()
+        all_sprites_to_level.update()  # мигание обводки
         all_sprites_to_level.draw(screen)
         pygame.display.flip()
 
@@ -242,7 +251,9 @@ def main_select():
     exit()
 
 
-def main_start():
+def main_start():  # Функция открывающая стартовое окно
+    Rules_and_blocks.clear_rules()  # Отчистка всего, что могло остаться
+    Rules_and_blocks.checking_for_rule_existence(board.board)
     fps = 3
     running = True
     screen.fill((0, 0, 0))
@@ -257,6 +268,7 @@ def main_start():
         "нажмите любую кнопку, чтобы продолжить", True, 'white')
     show = True
     while running:
+        # Мигание текста
         if show:
             screen.blit(test_start, (text_x + 100, 700))
             show = False
@@ -269,7 +281,9 @@ def main_start():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    # Выход из программы
                     return None
+                # Открывает уровень ниже ( выбор уровня )
                 main_select()
                 return None
 
@@ -278,7 +292,9 @@ def main_start():
     pygame.quit()
 
 
-def main_exit():
+def main_exit():  # Функция конечного экрана
+    Rules_and_blocks.clear_rules()
+    Rules_and_blocks.checking_for_rule_existence(board.board)
     fps = 3
     running = True
     screen.fill((0, 0, 0))
@@ -295,6 +311,7 @@ def main_exit():
         "Чтобы продолжить, нажмите любую кнопку", True, 'white')
     show = True
     while running:
+        # Отвечает за мигание текста
         if show:
             screen.blit(test_start, (text_x + 100, 700))
             show = False
@@ -307,7 +324,9 @@ def main_exit():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    # Выход из программы
                     return None
+                # Открывает выбор уровня
                 main_select()
                 return None
 

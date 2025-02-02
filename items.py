@@ -3,7 +3,7 @@ from sprites import ItemSprite, load_image
 from tric import Item, Rule, MainBoard
 
 
-class MegaItems(Item):
+class MegaItems(Item):  # Класс, к которому принадлежат все элементы
     def __init__(self, board: MainBoard):
         super().__init__(board)
         self.colide_type = 0
@@ -15,6 +15,7 @@ class MegaItems(Item):
         self.weak = False
         self.you = False
 
+    # Все функции отвечающие за изменение правил внутри элемента блока текста
     def set_death(self, act: bool):
         self.death = act
 
@@ -106,9 +107,11 @@ class Skull(MegaItems):
     color = (0, 0, 255)
     rule = Rule()
 
-
+# Игровые доски
 board = MainBoard(16, 10, 80)
 test_board = MainBoard(16, 10, 80)
+
+# Элементы классов
 moris = Moris(board)
 wall = Wall(board)
 flag = Flag(board)

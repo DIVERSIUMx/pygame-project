@@ -168,7 +168,7 @@ class ParticleSprite(pygame.sprite.Sprite):
             self.live_time -= 1
 
 
-class SelectSprite(pygame.sprite.Sprite):
+class SelectSprite(pygame.sprite.Sprite):  # спрайты для выбора уровня
     def __init__(self, file):
         super().__init__(all_sprites_to_level, select_level_sprites)
         self.file = file

@@ -18,22 +18,22 @@ def load_image(*filename):
 '''
 
 
-class LevelBoard:
+class LevelBoard:  # Доска для выбора уровня
     def __init__(self, margin):
         self.height = 5
         self.width = 9
         self.board = [[None for _ in range(self.width)] for _ in range(self.height)]
         self.pos_now = (0, 0)
-        self.board[0][0] = 'test_level.png'
-        self.board[0][1] = 'test_level.png'
-        self.board[0][2] = 'test_level.png'
-        self.board[0][3] = 'test_level.png'
-        self.board[0][4] = 'test_level.png'
-        self.board[0][5] = 'test_level.png'
-        self.board[0][6] = 'test_level.png'
-        self.board[0][7] = 'test_level.png'
-        self.board[0][8] = 'test_level.png'
-        self.board[1][0] = 'test_level.png'
+        # Все "Картинки" для выбора уровня
+        self.board[0][0] = 'level-1.png'
+        self.board[0][1] = 'level-2.png'
+        self.board[0][2] = 'level-3.png'
+        self.board[0][3] = 'level-4.png'
+        self.board[0][4] = 'level-5.png'
+        self.board[0][5] = 'level-6.png'
+        self.board[0][6] = 'level-7.png'
+        self.board[0][7] = 'level-8.png'
+
         print(self.board)
         self.margin = margin
 
@@ -43,8 +43,10 @@ class LevelBoard:
         for y in range(len(self.board)):
             for x in range(len(self.board[0])):
                 if self.board[y][x] is None:
+                    # в случаи если уровни закончились
                     stop = True
                     break
+                # Каждая картинка - спрайт
                 now = pygame.sprite.Sprite(all_sprites_to_level)
                 now.image = load_image(self.board[y][x])
                 now.rect = now.image.get_rect()
@@ -53,7 +55,7 @@ class LevelBoard:
             if stop:
                 break
 
-    def step(self, delta):
+    def step(self, delta):  # Изменение позиции при перемещении
         if 0 <= delta[0] + self.pos_now[0] < self.width and 0 <= delta[1] + self.pos_now[1] < self.height:
             if not self.board[self.pos_now[1] + delta[1]][self.pos_now[0] + delta[0]] is None:
                 self.pos_now = (self.pos_now[0] + delta[0], self.pos_now[1] + delta[1])
@@ -68,7 +70,7 @@ class LevelBoard:
             pygame.draw.rect(surface, (40, 40, 50), rect, 3)'''
 
 
-class OutlineRect:
+class OutlineRect:  # Обводка, указывающая на текущее местоположение
     def __init__(self, margin):
         self.color = 'white'
         self.counter = 1
@@ -77,12 +79,12 @@ class OutlineRect:
         self.x = margin - self.cell
         self.y = margin - self.cell
 
-    def change_cell(self, pos):
+    def change_cell(self, pos):  # Изменение положения
         x, y = pos
         self.x = self.margin * (x + 1) - self.cell
         self.y = self.margin * (y + 1) - self.cell
 
-    def update(self, surf):
+    def update(self, surf):  # Используется для мигания
         if self.counter == 1:
             pygame.draw.rect(surf, self.color, ((self.x, self.y), (80 + self.cell, 80 + self.cell)), self.cell)
         else:
@@ -90,7 +92,7 @@ class OutlineRect:
         self.counter = 0 if self.counter == 1 else 1
 
 
-def main_select():
+def main_select():  # Для прямого запуска
     pygame.init()
     screen_size = width, height = board.get_screen_size()
     screen = pygame.display.set_mode(screen_size)
