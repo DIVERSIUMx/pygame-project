@@ -106,7 +106,8 @@ def new_rule(
         for y, row in enumerate(board.board):
             for x, cell in enumerate(row):
                 for i in range(len(cell)):
-                    if cell[i].name == first_name.capitalize():
+                    # and type(cell[i]) is ActiveBlocksObject:
+                    if (cell[i].name == first_name.capitalize()):
                         board.history_items[-1][0].append((cell[i], x, y))
                         cell[i].die(
                             x * board.cell_size + board.left,
@@ -325,6 +326,16 @@ def search_for_rules(intereaction, board):
                             first_cord=cord, first_name=first_name, is_cord=(x + 1, y), finish_cord=(x + 2, y),
                             finish_name=finish_name
                         )  # Создание нового правила
+                    elif issubclass(board[y][x + 1][0].__class__, ActiveBlocksIS) and issubclass(
+                            board[y][x + 2][0].__class__,
+                            ActiveBlocksObject
+                    ):
+                        finish_name = board[y][x + 2][0].name
+                        first_name = board[y][x][0].name
+                        new_rule(
+                            first_cord=cord, first_name=first_name, is_cord=(x + 1, y), finish_cord=(x + 2, y),
+                            finish_name=finish_name, object_object=True
+                        )
             # проверка новых правил по y (блок объект находится сверху)
             if y < 7:  # проверка новых правил по y
                 if board[y + 1][x] and board[y + 2][x] and board[y][x]:
@@ -337,6 +348,16 @@ def search_for_rules(intereaction, board):
                         new_rule(
                             first_cord=cord, first_name=first_name, is_cord=(x, y + 1), finish_cord=(x, y + 2),
                             finish_name=finish_name
+                        )  # Создание нового правила
+                    elif issubclass(board[y + 1][x][0].__class__, ActiveBlocksIS) and issubclass(
+                            board[y + 2][x][0].__class__,
+                            ActiveBlocksObject
+                    ):  # проверка, что соседнии блоки составляют правило
+                        finish_name = board[y + 2][x][0].name
+                        first_name = board[y][x][0].name
+                        new_rule(
+                            first_cord=cord, first_name=first_name, is_cord=(x, y + 1), finish_cord=(x, y + 2),
+                            finish_name=finish_name, object_object=True
                         )  # Создание нового правила
     checking_for_rule_existence(board)
     # print(ActiveRules.get_rules())

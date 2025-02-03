@@ -25,7 +25,6 @@ def terminate():
 def end_screen(end_img, time, move_count, undo_count):
     items.clear_items()
     Rules_and_blocks.clear_rules()
-    Rules_and_blocks.get_rules()
     cannel = pygame.mixer.Channel(1)
     screen.fill(0)
     fps = 60

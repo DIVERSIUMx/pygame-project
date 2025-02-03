@@ -58,7 +58,7 @@ class MainBoard:
 
     def undo(self):  # Отмена хода
         if len(self.history_items) != 0:
-            from Rules_and_blocks import ActiveBlocks, search_for_rules
+            from Rules_and_blocks import ActiveBlocks, search_for_rules, ActiveBlocksObject
             self.intereaction = []
             for deleted in self.history_items[-1][0]:
                 self.board[deleted[2]][deleted[1]].append(deleted[0])
@@ -68,6 +68,8 @@ class MainBoard:
                     )
             for added in self.history_items[-1][1]:
                 self.board[added[2]][added[1]].remove(added[0])
+                self.new_board[added[2]][added[1]] = sorted(self.new_board[added[2]][added[1]], key=lambda f: issubclass(
+                    f.__class__, ActiveBlocksObject), reverse=True)
 
             if self.intereaction:
                 search_for_rules(self.intereaction, self.board)
@@ -91,7 +93,7 @@ class MainBoard:
         self.history_items.append(([], []))
         self.move_sprites = []
         self.check_poses = []
-        from Rules_and_blocks import search_for_rules
+        from Rules_and_blocks import search_for_rules, ActiveBlocksObject
 
         self.intereaction = list()
         self.new_board = [[[c for c in i] for i in r] for r in self.board]
@@ -173,6 +175,8 @@ class MainBoard:
                                 self.new_board[y][x].pop(i)
                     elif you_here and win_here:
                         return True
+                self.new_board[y][x] = sorted(self.new_board[y][x], key=lambda f: issubclass(
+                    f.__class__, ActiveBlocksObject), reverse=True)
 
         self.board = self.new_board
         if self.intereaction:

@@ -166,55 +166,7 @@ def add_new_level():  # Создание новго уровня
     # )
 
     new_level(
-        'level-3', [
-            ['water', [6, 4], False], ['water', [7, 4], False], ['water', [8, 4], False], [
-                'water', [9, 4], False], ['water', [10, 4], False],
-            ['water', [6, 5], False], ['water', [7, 5], False], ['water', [8, 5], False], [
-                'water', [9, 5], False], ['water', [10, 5], False],
-            ['rock', [6, 3], False], ['rock', [7, 3], False], ['rock', [8, 3], False], [
-                'rock', [9, 3], False], ['rock', [10, 3], False],
-            ['rock', [6, 6], False], ['rock', [7, 6], False], ['rock', [8, 6], False], [
-                'rock', [9, 6], False], ['rock', [10, 6], False],
-            ['rock', [6, 0], False], ['rock', [10, 0], False],
-            ['rock', [6, 1], False], ['rock', [10, 1], False],
-            ['rock', [6, 2], False], ['rock', [10, 2], False],
-            ['rock', [6, 7], False], ['rock', [10, 7], False],
-            ['rock', [6, 8], False], ['rock', [10, 8], False],
-            ['rock', [6, 9], False], ['rock', [10, 9], False],
-            ['flag', [13, 4], False],
-            ['box', [2, 3], False], ['box', [4, 3], False],
-            ['Rules_and_blocks.ActiveBlocksObject("box", board)', [
-                3, 5], True],
-            ['Rules_and_blocks.ActiveBlocksIS(board)', [4, 6], True],
-            ['Rules_and_blocks.ActiveBlocksAction("push", board)', [
-                3, 7], True],
-            ['Rules_and_blocks.ActiveBlocksAction("win", board)', [
-                13, 5], True],
-            ['Rules_and_blocks.ActiveBlocksObject("rock", board)', [
-                7, 2], True],
-            ['Rules_and_blocks.ActiveBlocksIS(board)', [8, 2], True],
-            ['Rules_and_blocks.ActiveBlocksAction("stop", board)', [
-                9, 2], True],
-            ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [
-                0, 0], True],
-            ['Rules_and_blocks.ActiveBlocksIS(board)', [1, 0], True],
-            ['Rules_and_blocks.ActiveBlocksObject("water", board)', [
-                12, 8], True],
-            ['Rules_and_blocks.ActiveBlocksIS(board)', [13, 8], True],
-            ['Rules_and_blocks.ActiveBlocksAction("sink", board)', [
-                14, 8], True],
-            ['moris', [4, 5], False],
-            ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [
-                12, 1], True],
-            ['Rules_and_blocks.ActiveBlocksIS(board)', [13, 1], True],
-            ['Rules_and_blocks.ActiveBlocksAction("you", board)', [
-                14, 1], True],
-
-
-
-
-        ]
-    )
+        'level-4', [['water', [8, 0], False], ['water', [8, 1], False], ['water', [8, 2], False], ['water', [8, 3], False], ['water', [8, 4], False], ['water', [8, 5], False], ['water', [8, 6], False], ['water', [8, 7], False], ['water', [8, 8], False], ['water', [8, 9], False], ['wall', [2, 2], False], ['wall', [3, 2], False], ['wall', [3, 2], False], ['wall', [4, 2], False], ['wall', [5, 2], False], ['wall', [6, 2], False], ['wall', [6, 2], False], ['wall', [6, 2], False], ['wall', [6, 2], False], ['wall', [6, 2], False], ['wall', [2, 3], False], ['wall', [6, 3], False], ['wall', [2, 4], False], ['wall', [6, 4], False], ['wall', [2, 5], False], ['wall', [6, 5], False], ['wall', [2, 6], False], ['wall', [3, 6], False], ['wall', [4, 6], False], ['wall', [5, 6], False], ['wall', [6, 6], False], ['flag', [12, 4], False], ['Rules_and_blocks.ActiveBlocksObject("water", board)', [0, 0], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [1, 0], True], ['Rules_and_blocks.ActiveBlocksObject("sink", board)', [2, 1], True], ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [3, 1], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [4, 0], True], ['Rules_and_blocks.ActiveBlocksObject("rock", board)', [5, 1], True], ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [1, 3], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [0, 4], True], ['Rules_and_blocks.ActiveBlocksObject("rock", board)', [0, 5], True], ['Rules_and_blocks.ActiveBlocksObject("wall", board)', [3, 5], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [4, 5], True], ['Rules_and_blocks.ActiveBlocksAction("stop", board)', [5, 5], True], ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 4], True], ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [11, 2], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [12, 2], True], ['Rules_and_blocks.ActiveBlocksAction("win", board)', [13, 2], True], ['Rules_and_blocks.ActiveBlocksObject("water", board)', [13, 9], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [14, 9], True], ['Rules_and_blocks.ActiveBlocksAction("death", board)', [15, 9], True], ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [13, 0], True], ['Rules_and_blocks.ActiveBlocksIS(board)', [14, 0], True], ['Rules_and_blocks.ActiveBlocksAction("you", board)', [15, 0], True], ['moris', [4, 3], False]])
 
 
 if __name__ == "__main__":
