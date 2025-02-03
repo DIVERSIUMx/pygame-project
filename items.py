@@ -112,3 +112,12 @@ flag = Flag(board)
 box = Box(board)
 rock = Rock(board)
 skull = Skull(board)
+
+
+def clear_items():
+    moris.__init__(board)
+    wall.__init__(board)
+    flag.__init__(board)
+    box.__init__(board)
+    rock.__init__(board)
+    skull.__init__(board)

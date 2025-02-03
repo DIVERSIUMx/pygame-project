@@ -1,8 +1,9 @@
 import pygame
 import os
-import sys
-from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze, select_level_sprites, all_sprites_to_level, move_sound, destroy_sound
+from config import all_sprites, item_sprites, particle_sprites, block_sprites, end_screen_sprites, clock, froze, \
+    select_level_sprites, all_sprites_to_level, move_sound, destroy_sound
 import random
+
 pygame.init()
 FROZE = [False]
 
@@ -40,13 +41,19 @@ class TimeCounterSprite(pygame.sprite.Sprite):
         self.rect = rect
         self.font = pygame.font.Font(None, self.rect.width // 5)
         self.value = 0
-        self.image = self.font.render(str(self.value // 60).rjust(
-            2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
+        self.image = self.font.render(
+            str(self.value // 60).rjust(
+                2, "0"
+            ) + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255)
+            )
 
     def set_value(self, value):
         self.value = value
-        self.image = self.font.render(str(self.value // 60).rjust(
-            2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
+        self.image = self.font.render(
+            str(self.value // 60).rjust(
+                2, "0"
+            ) + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255)
+            )
 
 
 class ResultShowSprite(pygame.sprite.Sprite):  # Спрайт отображения результата
@@ -56,13 +63,19 @@ class ResultShowSprite(pygame.sprite.Sprite):  # Спрайт отображен
         self.rect = rect
         self.font = pygame.font.Font(None, self.rect.width // nums_count)
         self.value = 0
-        self.image = self.font.render(str(self.value).rjust(
-            self.nums_count, "0"), 1, (255, 255, 255))
+        self.image = self.font.render(
+            str(self.value).rjust(
+                self.nums_count, "0"
+            ), 1, (255, 255, 255)
+        )
 
     def set_value(self, value):
         self.value = value
-        self.image = self.font.render(str(self.value).rjust(
-            self.nums_count, "0"), 1, (255, 255, 255))
+        self.image = self.font.render(
+            str(self.value).rjust(
+                self.nums_count, "0"
+            ), 1, (255, 255, 255)
+        )
 
 
 class BlockSprite(pygame.sprite.Sprite):  # Спрайт блокировки частиц
@@ -91,8 +104,10 @@ class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
             self.rect = self.image.get_rect()
         else:
             self.im = pygame.transform.scale(self.im, (80 * colums, 80 * rows))
-            self.frames = tuple(self.im.subsurface(x * 80, y * 80, 80, 80)
-                                for x in range(colums) for y in range(rows))
+            self.frames = tuple(
+                self.im.subsurface(x * 80, y * 80, 80, 80)
+                for x in range(colums) for y in range(rows)
+                )
             self.image = self.frames[0]
             self.rect = self.image.get_rect()
 
@@ -133,8 +148,13 @@ class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
         else:
             for x in range(8):
                 for y in range(8):
-                    ParticleSprite(self.image.subsurface(
-                        x * 10, y * 10, 10, 10), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10), random.randint(-10, 10), 180)
+                    ParticleSprite(
+                        self.image.subsurface(
+                            x * 10, y * 10, 10, 10
+                        ), x * 10 + self.rect.x, y * 10 + self.rect.y, random.randint(-10, 10),
+                        random.randint(-10, 10),
+                        180
+                    )
             FROZE[0] = False
             destroy_sound.play()
             self.kill()

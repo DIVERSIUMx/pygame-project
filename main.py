@@ -22,7 +22,10 @@ def terminate():
 
 
 def end_screen(end_img, time, move_count, undo_count):
-    Rules_and_blocks.checking_for_rule_existence(board.board)
+    items.clear_items()
+    Rules_and_blocks.clear_rules()
+    Rules_and_blocks.get_rules()
+    '''Rules_and_blocks.checking_for_rule_existence(board.board)'''
     screen.fill(0)
     fps = 60
     transparent_val = 1
@@ -111,11 +114,11 @@ def end_screen(end_img, time, move_count, undo_count):
         end_screen_sprites.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
-        '''print(time)'''
+        # print(time)
 
 
 def test(self: MainBoard):
-    """В эту функцию пихать все для тестов"""
+    # В эту функцию пихать все для тестов
     self.board[4][4] = [items.moris]
     # self.rules[items.Moris].weak = False
 
@@ -138,19 +141,16 @@ def test(self: MainBoard):
     self.board[3][5] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
     self.board[5][10] = [items.Water(self)]
     # self.rules[items.Water].silk = True
-    print(issubclass(items.Box(self).__class__, items.MegaItems))
-    print(self.board)
+    # print(issubclass(items.Box(self).__class__, items.MegaItems))
+    # print(self.board)
 
 
 def main(level: str):
-    board.clear()
-    Rules_and_blocks.clear_rules()
-    Rules_and_blocks.checking_for_rule_existence(board.board)
+
     fps = 60
     start_level(level)
-    Rules_and_blocks.get_rules()
     Rules_and_blocks.checking_for_rule_existence(board.board)
-    print(board.board)
+    # print(board.board)
 
     time = 0
     undo_count = 0
@@ -162,12 +162,13 @@ def main(level: str):
     end_image.blit(screen, (0, 0))
     while True:
         for event in pygame.event.get():
-            Rules_and_blocks.get_rules()
             if event.type == pygame.QUIT:
                 running = False
                 terminate()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
+                    items.clear_items()
+                    board.clear()
                     main_select()
                     return None
             if not FROZE[0] and event.type == pygame.KEYDOWN:
@@ -176,7 +177,7 @@ def main(level: str):
                     undo_count += 1
                 else:
                     if board.you_go(event.key):
-                        print("YOU WIN")
+                        #  print("YOU WIN")
                         running = False
                         end_image.blit(screen, (0, 0))
         if not running:
@@ -240,6 +241,8 @@ def main_select():  # Выбор уровня
 
 
 def main_start():  # Функция открывающая стартовое окно
+    items.clear_items()
+    board.clear()
     Rules_and_blocks.clear_rules()  # Отчистка всего, что могло остаться
     Rules_and_blocks.checking_for_rule_existence(board.board)
     fps = 3

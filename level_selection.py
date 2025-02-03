@@ -3,19 +3,13 @@ import os
 from sprites import SelectSprite, clock, all_sprites_to_level
 from items import board
 from main import main
+
 fps = 8
 
 
 def load_image(*filename):
     path = os.path.join("data", "sprite", "select-level", *filename)
     return pygame.image.load(path)
-
-
-'''class LevelIcons:
-    def __init__(self, name):
-        sprite = SelectSprite(load_image(f"{name}.png"))
-        sprite.rect.x = 500
-'''
 
 
 class LevelBoard:  # Доска для выбора уровня
@@ -34,7 +28,7 @@ class LevelBoard:  # Доска для выбора уровня
         self.board[0][6] = 'level-7.png'
         self.board[0][7] = 'level-8.png'
 
-        print(self.board)
+        # print(self.board)
         self.margin = margin
 
     def render(self):
@@ -59,15 +53,6 @@ class LevelBoard:  # Доска для выбора уровня
         if 0 <= delta[0] + self.pos_now[0] < self.width and 0 <= delta[1] + self.pos_now[1] < self.height:
             if not self.board[self.pos_now[1] + delta[1]][self.pos_now[0] + delta[0]] is None:
                 self.pos_now = (self.pos_now[0] + delta[0], self.pos_now[1] + delta[1])
-
-        '''for x, cell in enumerate(row):
-            rect = (
-                x * self.cell_size + self.left,
-                y * self.cell_size + self.top,
-                self.cell_size,
-                self.cell_size,
-            )
-            pygame.draw.rect(surface, (40, 40, 50), rect, 3)'''
 
 
 class OutlineRect:  # Обводка, указывающая на текущее местоположение

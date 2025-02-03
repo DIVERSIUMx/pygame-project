@@ -1,5 +1,6 @@
 # На счет имени пока назвал так, потом поменяем FIXME
 import pygame
+
 from sprites import ItemSprite, load_image, item_sprites, end_screen_sprites, item_sprites
 
 
@@ -23,7 +24,7 @@ class MainBoard:
     # получение размеров экрана для корректного отображения доски
     def get_screen_size(self):
         return self.width * self.cell_size + (
-            2 * self.left
+                2 * self.left
         ), self.height * self.cell_size + (2 * self.top)
 
     def render(self, surface):  # ренрер самой доски
@@ -63,7 +64,8 @@ class MainBoard:
                 self.board[deleted[2]][deleted[1]].append(deleted[0])
                 if isinstance(deleted[0], ActiveBlocks):
                     self.intereaction.append(
-                        (deleted[0], (deleted[1], deleted[2])))
+                        (deleted[0], (deleted[1], deleted[2]))
+                    )
             for added in self.history_items[-1][1]:
                 self.board[added[2]][added[1]].remove(added[0])
 
@@ -82,6 +84,8 @@ class MainBoard:
             sprite.kill()
         for sprite in end_screen_sprites:
             sprite.kill()
+        from Rules_and_blocks import checking_for_rule_existence
+        checking_for_rule_existence(self.board)
 
     def move(self, you_go_delta):  # Функция обработки самого хода
         self.history_items.append(([], []))
@@ -128,8 +132,10 @@ class MainBoard:
                                 self.history_items[-1][1].remove((item, x, y))
                             else:
                                 self.history_items[-1][0].append((item, x, y))
-                            item.die(x * self.cell_size + self.left,
-                                     y * self.cell_size + self.top)
+                            item.die(
+                                x * self.cell_size + self.left,
+                                y * self.cell_size + self.top
+                            )
                         self.new_board[y][x] = []
                         break
                     elif item.weak and len(self.new_board[y][x]) > 1:
@@ -137,8 +143,10 @@ class MainBoard:
                             self.history_items[-1][1].remove((item, x, y))
                         else:
                             self.history_items[-1][0].append((item, x, y))
-                        item.die(x * self.cell_size + self.left,
-                                 y * self.cell_size + self.top)
+                        item.die(
+                            x * self.cell_size + self.left,
+                            y * self.cell_size + self.top
+                        )
                         rm_indexes.append(i - len(rm_indexes))
                     else:
                         you_here = you_here or item.you
@@ -152,12 +160,16 @@ class MainBoard:
                             if item.you:
                                 if item in list(map(lambda f: f[1], self.history_items[-1][1])):
                                     self.history_items[-1][1].remove(
-                                        (item, x, y))
+                                        (item, x, y)
+                                    )
                                 else:
                                     self.history_items[-1][0].append(
-                                        (item, x, y))
-                                item.die(x * self.cell_size + self.left,
-                                         y * self.cell_size + self.top)
+                                        (item, x, y)
+                                    )
+                                item.die(
+                                    x * self.cell_size + self.left,
+                                    y * self.cell_size + self.top
+                                )
                                 self.new_board[y][x].pop(i)
                     elif you_here and win_here:
                         return True
@@ -195,8 +207,10 @@ class MainBoard:
                                 self.history_items[-1][1].remove((item, x, y))
                             else:
                                 self.history_items[-1][0].append((item, x, y))
-                            item.die(x * self.cell_size + self.left,
-                                     y * self.cell_size + self.top)
+                            item.die(
+                                x * self.cell_size + self.left,
+                                y * self.cell_size + self.top
+                            )
                         self.board[y][x] = []
                         break
                     elif item.weak and len(self.board[y][x]) > 1:
@@ -204,8 +218,10 @@ class MainBoard:
                             self.history_items[-1][1].remove((item, x, y))
                         else:
                             self.history_items[-1][0].append((item, x, y))
-                        item.die(x * self.cell_size + self.left,
-                                 y * self.cell_size + self.top)
+                        item.die(
+                            x * self.cell_size + self.left,
+                            y * self.cell_size + self.top
+                        )
                         rm_indexes.append(i - len(rm_indexes))
                     else:
                         you_here = you_here or item.you
@@ -219,12 +235,16 @@ class MainBoard:
                             if item.you:
                                 if item in list(map(lambda f: f[1], self.history_items[-1][1])):
                                     self.history_items[-1][1].remove(
-                                        (item, x, y))
+                                        (item, x, y)
+                                    )
                                 else:
                                     self.history_items[-1][0].append(
-                                        (item, x, y))
-                                item.die(x * self.cell_size + self.left,
-                                         y * self.cell_size + self.top)
+                                        (item, x, y)
+                                    )
+                                item.die(
+                                    x * self.cell_size + self.left,
+                                    y * self.cell_size + self.top
+                                )
                                 self.board[y][x].pop(i)
                     elif you_here and win_here:
                         return True
@@ -277,7 +297,8 @@ class Item(object):
                     return False
                 elif item.push:
                     item.try_step(
-                        new, (2 * x - x1, 2 * y - y1))
+                        new, (2 * x - x1, 2 * y - y1)
+                    )
                     continue
             self.step(old, new)
             return True
@@ -286,13 +307,15 @@ class Item(object):
         self.board.history_items[-1][0].append((self, *old))
         self.board.history_items[-1][1].append((self, *new))
         self.board.check_poses.append(new)
-        self.board.move_sprites.append(((self.sprite.filename, new[0] * 80 + self.board.left, new[1] * 80 + self.board.top), (
-            self.sprite.filename, old[0] * 80 + self.board.left, old[1] * 80 + self.board.top)))
+        self.board.move_sprites.append(
+            ((self.sprite.filename, new[0] * 80 + self.board.left, new[1] * 80
+              + self.board.top), (
+                 self.sprite.filename, old[0] * 80 + self.board.left, old[1] * 80 + self.board.top))
+        )
         from Rules_and_blocks import ActiveBlocks
 
         if issubclass(self.__class__, ActiveBlocks):
             self.board.intereaction.append((self, new))
-        """print(0)"""
         if self in self.board.new_board[old[1]][old[0]]:
             self.board.new_board[new[1]][new[0]].append(self)
             self.board.new_board[old[1]][old[0]].remove(self)

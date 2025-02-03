@@ -1,6 +1,6 @@
 import pygame
 from tric import Item
-from items import MegaItems, wall, rock, box, board, moris, flag, skull
+from items import MegaItems, wall, rock, box, board, moris, flag, skull, test_board
 from sprites import ItemSprite, load_image
 
 pygame.init()
@@ -130,11 +130,11 @@ def new_rule(
     #                             board.board[y][x][0] = globals()[f"{'moris'}"]
     #                             print(board.board[y][x], 'log 3')
     else:  # Применяется во всех иных случаях
-        print(first_name, finish_name)
+        # print(first_name, finish_name)
         exec(
             compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec')
         )  # Обращаемся к элементу класса в items и даем ему новые параметры
-        print(globals()[first_name].get_rules())
+        # print(globals()[first_name].get_rules())
     if flag_moris:  # Если праивло не на мориса - добавление в список
         ActiveRules.append(
             (first_cord, is_cord, finish_cord,
@@ -142,8 +142,8 @@ def new_rule(
         )
 
 
-'''new_rule(first_cord=(2, 8), first_name='moris', is_cord=(2, 9), finish_cord=(2, 10), finish_name='you')
-print(ActiveRules.get_rules(), 1)'''
+# new_rule(first_cord=(2, 8), first_name='moris', is_cord=(2, 9), finish_cord=(2, 10), finish_name='you')
+# print(ActiveRules.get_rules(), 1)
 
 
 # Функция проверяет на существование старых правил
@@ -151,11 +151,6 @@ print(ActiveRules.get_rules(), 1)'''
 def checking_for_rule_existence(board):
     rules = ActiveRules.get_rules()
     for element in rules:
-        '''print(element)
-        print(board[element[0][1]][element[0][0]][0].name, board[element[1][1]][element[1][0]], board[element[2][1]][
-            element[2][0]])'''
-        '''print(board[element[0][0]][element[0][1]])'''
-
         if rules.count(element) >= 2:
             del ActiveRules[element]
         elif not (board[element[0][1]][element[0][0]] and board[element[1][1]][element[1][0]] and board[element[2][1]][
@@ -171,11 +166,11 @@ def checking_for_rule_existence(board):
                 or board[element[1][1]][element[1][0]][0].name != element[-1][1] \
                 or board[element[2][1]][element[2][0]][0].name != element[-1][2]:
             # Если в правиле были сдвинуты соседние блоки
-            print(
-                board[element[0][1]][element[0][0]
-                ][0].name, element[-1][0], '\n',
-                board[element[1][1]][element[1][0]][0].name, element[-1][1]
-            )
+            # print(
+            #    board[element[0][1]][element[0][0]
+            #    ][0].name, element[-1][0], '\n',
+            #    board[element[1][1]][element[1][0]][0].name, element[-1][1]
+            # )
             if element[-1][-1] is True:  # Очиста праивла obj is obj (ограничение для ошибок)
                 del ActiveRules[element]
                 continue
@@ -184,9 +179,9 @@ def checking_for_rule_existence(board):
                 compile(
                     f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(), 'exec'
                 )
-            )# отменяет применные праивла на элемент класса в items
+            )  # отменяет применные праивла на элемент класса в items
         # изменение правил элемента в процессе
-    print(ActiveRules.get_rules(), 2)
+    # print(ActiveRules.get_rules(), 2)
 
 
 # Функция получает список всех элементов (аткивных блоков) сдвинутых за ход
@@ -194,7 +189,7 @@ def search_for_rules(intereaction, board):
     checking_for_rule_existence(board)  # Проверяем, что все правила действительны
 
     for element in intereaction:
-        print(element)
+        # print(element)
         if isinstance(element[0], ActiveBlocksAction):  # Проверяет на то, что блок текста являтся дейсвтием
             cord = x, y = element[1]
             if x >= 2:  # проверка новых правил по x
@@ -227,22 +222,22 @@ def search_for_rules(intereaction, board):
             if 1 <= x < 15:  # проверка новых правил по x
 
                 if board[y][x - 1] and board[y][x + 1]:
-                    print(
-                        issubclass(board[y][x - 1][0].__class__, ActiveBlocksObject), issubclass(
-                            board[y][x + 1][0].__class__, ActiveBlocksAction
-                        )
-                    )
+                    # print(
+                    #    issubclass(board[y][x - 1][0].__class__, ActiveBlocksObject), issubclass(
+                    #        board[y][x + 1][0].__class__, ActiveBlocksAction
+                    #    )
+                    # )
                     if issubclass(board[y][x - 1][0].__class__, ActiveBlocksObject) and issubclass(
                             board[y][x + 1][0].__class__, ActiveBlocksAction
                     ):  # проверка, что соседнии блоки составляют правило
-                        print(1)
+                        # print(1)
                         first_name = board[y][x - 1][0].name
                         finish_name = board[y][x + 1][0].name
                         new_rule(
                             first_cord=(x - 1, y), first_name=first_name, is_cord=cord, finish_cord=(x + 1, y),
                             finish_name=finish_name
                         )  # Создание нового правила
-                        print(ActiveRules.get_rules())
+                        # print(ActiveRules.get_rules())
                     elif issubclass(board[y][x - 1][0].__class__, ActiveBlocksObject) and issubclass(
                             board[y][x + 1][0].__class__,
                             ActiveBlocksObject
@@ -255,7 +250,7 @@ def search_for_rules(intereaction, board):
                         )  # Создание нового правила
             if 1 <= y < 9:  # проверка новых правил по y
                 if board[y - 1][x] and board[y + 1][x]:
-                    print(board[y - 1][x], board[y + 1][x])
+                    # print(board[y - 1][x], board[y + 1][x])
                     if issubclass(board[y - 1][x][0].__class__, ActiveBlocksObject) and issubclass(
                             board[y + 1][x][0].__class__, ActiveBlocksAction
                     ):  # проверка, что соседнии блоки составляют правило
@@ -277,9 +272,9 @@ def search_for_rules(intereaction, board):
                         )  # Создание нового правила
         elif isinstance(element[0], ActiveBlocksObject):  # Проверяет на то, что блок текста являтся объектом
             cord = x, y = element[1]
-            print('log Object')
+            # print('log Object')
             # проверка новых правил по x (блок объект находится справо)
-            if x >= 2:    # проверка новых правил по x
+            if x >= 2:  # проверка новых правил по x
                 if board[y][x - 1] and board[y][x - 2]:
                     if issubclass(board[y][x - 1][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y][x - 2][0].__class__,
@@ -292,7 +287,7 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name, object_object=True
                         )  # Создание нового правила
             # проверка новых правил по y (блок объект находится снизу)
-            if y >= 2:    # проверка новых правил по y
+            if y >= 2:  # проверка новых правил по y
                 if board[y - 1][x] and board[y - 2][x]:
                     if issubclass(board[y - 1][x][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y - 2][x][0].__class__,
@@ -332,7 +327,7 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name
                         )  # Создание нового правила
     checking_for_rule_existence(board)
-    print(ActiveRules.get_rules())
+    # print(ActiveRules.get_rules())
 
 
 def get_rules():  # Вывод активных блоков
@@ -340,15 +335,5 @@ def get_rules():  # Вывод активных блоков
 
 
 def clear_rules():  # Отчищение правил
+    checking_for_rule_existence(test_board.board)
     ActiveRules.clear()
-
-
-'''item = globals()['wall']
-item.set_deth(True)'''
-
-'''x = compile("globals()['wall'].set_deth(True)", str(), 'eval')
-exec(x)'''
-
-'''WallActObj = ActiveBlocksObject('wall')
-a = globals()[WallActObj.name]
-a.set_deth(True)'''

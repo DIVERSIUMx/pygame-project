@@ -3,7 +3,7 @@ from items import test_board, board
 import Rules_and_blocks
 import items
 from ast import literal_eval
-from items import MegaItems, wall, rock, box, board, moris, flag, wall, rock, box, board, moris, flag, skull
+from items import MegaItems, wall, rock, box, moris, board, flag, skull
 
 
 def start_level(name: str):  # Открытие уровня из бд
@@ -17,7 +17,7 @@ def start_level(name: str):  # Открытие уровня из бд
         f"""SELECT start_rules FROM levels
                         WHERE name = ?""", (name,)
     ).fetchall()[0]
-    print(start_rules[0], 'start rules')
+    # print(start_rules[0], 'start rules')
     blocks = literal_eval(blocks[0])
     start_rules = literal_eval(start_rules[0])
     for el in blocks:
@@ -27,7 +27,7 @@ def start_level(name: str):  # Открытие уровня из бд
         else:
             board.board[y][x] = [globals()[f'{el[0]}']]
     for el in start_rules:  # Создание стартовых правил
-        print(el[3][3])
+        # print(el[3][3])
         Rules_and_blocks.new_rule(
             first_cord=el[0], is_cord=el[1], finish_cord=el[2], first_name=el[3][0], finish_name=el[3][2],
             object_object=el[3][3]
@@ -47,28 +47,28 @@ def new_level(name: str, blocks: list):  # Создание нового уро�
     for el in blocks:
         x, y = el[1]
         test_board.board[y][x] = el[0]
-        print(
-            issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS), eval(
-                el[0]
-            ).__class__, 'log kit'
-        )
+        # print(
+        #    issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS), eval(
+        #        el[0]
+        #    ).__class__, 'log kit'
+        # )
         if issubclass(eval(el[0]).__class__, Rules_and_blocks.ActiveBlocksIS):
             list_is.append((x, y))
-    print(test_board.board, 'test board')
+    # print(test_board.board, 'test board')
     for el in list_is:
-        print(el, 'log el')
+        # print(el, 'log el')
         cord = x, y = el
         if 1 <= x < 15:  # проверка новых правил по x
             if test_board.board[y][x - 1] and test_board.board[y][x + 1]:
-                print(
-                    issubclass(
-                        test_board.board[y][x - 1].__class__, Rules_and_blocks.ActiveBlocksObject
-                    ),
-                    issubclass(
-                        test_board.board[y][x +
-                                            1].__class__, Rules_and_blocks.ActiveBlocksAction
-                    )
-                )
+                # print(
+                #    issubclass(
+                #        test_board.board[y][x - 1].__class__, Rules_and_blocks.ActiveBlocksObject
+                #    ),
+                #    issubclass(
+                #        test_board.board[y][x +
+                #                            1].__class__, Rules_and_blocks.ActiveBlocksAction
+                #    )
+                # )
                 try:
                     if issubclass(
                             eval(
@@ -79,14 +79,14 @@ def new_level(name: str, blocks: list):  # Создание нового уро�
                             test_board.board[y][x + 1]
                         ).__class__, Rules_and_blocks.ActiveBlocksAction
                     ):  # проверка, что соседнии блоки составляют правило
-                        print(1)
+                        # print(1)
                         first_name = eval(test_board.board[y][x - 1]).name
                         finish_name = eval(test_board.board[y][x + 1]).name
                         star_rules.append(
                             ((x - 1, y), (x, y), (x + 1, y),
                              (first_name, 'IS', finish_name, False))
                         )
-                        print(Rules_and_blocks.ActiveRules.get_rules())
+                        # print(Rules_and_blocks.ActiveRules.get_rules())
                     elif issubclass(
                             eval(
                                 test_board.board[y][x - 1]
@@ -141,9 +141,9 @@ def new_level(name: str, blocks: list):  # Создание нового уро�
                     print(e)
     con = sqlite3.connect('game.sqlite')
     cur = con.cursor()
-    print(name)
-    print(blocks)
-    print(star_rules)
+    # print(name)
+    # print(blocks)
+    # print(star_rules)
     cur.execute(
         f"""INSERT INTO levels(name, blocks, start_rules) VALUES(?, ?, ?)""", (name, str(
             blocks
@@ -153,7 +153,8 @@ def new_level(name: str, blocks: list):  # Создание нового уро�
 
 
 def add_new_level():  # Создание новго уровня
-    new_level('level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
+    new_level(
+        'level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
                     ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 1], True],
                     ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 1], True],
                     ['Rules_and_blocks.ActiveBlocksAction("you", board)', [7, 1], True],
@@ -162,4 +163,4 @@ def add_new_level():  # Создание новго уровня
                     ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 4], True],
                     ['Rules_and_blocks.ActiveBlocksAction("win", board)', [7, 4], True]]
 
-          )
+    )
