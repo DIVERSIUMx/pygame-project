@@ -276,11 +276,15 @@ class Item(object):
                 if item.stop and not item.push:
                     return False
                 elif item.push:
-                    item.try_step(
-                        new, (2 * x - x1, 2 * y - y1))
-                    continue
+                    if item.try_step(
+                            new, (2 * x - x1, 2 * y - y1)):
+                        continue
+                    else:
+                        return False
             self.step(old, new)
             return True
+        else:
+            return False
 
     def step(self, old, new):  # Перемешение объекта
         self.board.history_items[-1][0].append((self, *old))

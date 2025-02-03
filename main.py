@@ -1,6 +1,7 @@
 #!/bin/python3
 import os
 
+# from pygame.examples import sound
 import pygame
 from tric import MainBoard
 import items
@@ -10,7 +11,7 @@ from items import board
 from Initialization_levels import start_level
 from sprites import ItemSprite, FROZE, load_image, BlockSprite, SlideSprite, ResultShowSprite, TimeCounterSprite, \
     all_sprites_to_level
-from config import clock, all_sprites, end_screen_sprites, item_sprites
+from config import clock, all_sprites, end_screen_sprites, item_sprites, tap_sound
 import level_selection
 
 fps = 60
@@ -22,6 +23,7 @@ def terminate():
 
 
 def end_screen(end_img, time, move_count, undo_count):
+    cannel = pygame.mixer.Channel(1)
     Rules_and_blocks.checking_for_rule_existence(board.board)
     screen.fill(0)
     fps = 60
@@ -64,6 +66,8 @@ def end_screen(end_img, time, move_count, undo_count):
             check_counter.set_value(
                 check_counter.value + int((pygame.time.get_ticks() % 3) == 0)
             )
+            if not cannel.get_busy():
+                tap_sound.play()
             if check_counter.value == move_count:
                 state = 3
         elif state == 3:
@@ -76,6 +80,8 @@ def end_screen(end_img, time, move_count, undo_count):
                 true_check_counter.value +
                 int((pygame.time.get_ticks() % 3) == 0)
             )
+            if not cannel.get_busy():
+                tap_sound.play()
             if true_check_counter.value == move_count + undo_count:
                 state = 5
         elif state == 5:
@@ -87,6 +93,8 @@ def end_screen(end_img, time, move_count, undo_count):
             time_counter.set_value(
                 time_counter.value + int((pygame.time.get_ticks() % 3) == 0)
             )
+            if not cannel.get_busy():
+                tap_sound.play()
             if time_counter.value >= time:
                 state = 8
         elif state != 8:

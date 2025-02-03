@@ -38,7 +38,8 @@ class TimeCounterSprite(pygame.sprite.Sprite):
     def __init__(self, rect: pygame.Rect):
         super().__init__(all_sprites, end_screen_sprites)
         self.rect = rect
-        self.font = pygame.font.Font(None, self.rect.width // 5)
+        self.font = pygame.font.Font(os.path.join(
+            "data", "font", "NEOPIXEL.otf"), self.rect.width // 5)
         self.value = 0
         self.image = self.font.render(str(self.value // 60).rjust(
             2, "0") + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255))
@@ -54,7 +55,8 @@ class ResultShowSprite(pygame.sprite.Sprite):  # Спрайт отображен
         super().__init__(all_sprites, end_screen_sprites)
         self.nums_count = nums_count
         self.rect = rect
-        self.font = pygame.font.Font(None, self.rect.width // nums_count)
+        self.font = pygame.font.Font(os.path.join(
+            "data", "font", "NEOPIXEL.otf"), self.rect.width // nums_count)
         self.value = 0
         self.image = self.font.render(str(self.value).rjust(
             self.nums_count, "0"), 1, (255, 255, 255))

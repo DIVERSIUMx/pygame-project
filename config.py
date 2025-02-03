@@ -16,6 +16,8 @@ destroy_sound = pygame.mixer.Sound(
     os.path.join("data", "sound", "destroy.wav"))
 move_sound = pygame.mixer.Sound(
     os.path.join("data", "sound", "move.wav"))
+tap_sound = pygame.mixer.Sound(
+    os.path.join("data", "sound", "tap.wav"))
 
 global froze
 froze = False
