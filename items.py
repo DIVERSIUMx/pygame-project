@@ -78,7 +78,7 @@ class Wall(MegaItems):
 
 
 class Rock(MegaItems):
-    sprite = ItemSprite("water", load_image("rock.png"))
+    sprite = ItemSprite("rock", load_image("rock.png"))
     name = "Rock"
     color = 'orange'
 
@@ -112,6 +112,7 @@ flag = Flag(board)
 box = Box(board)
 rock = Rock(board)
 skull = Skull(board)
+water = Water(board)
 
 
 def clear_items():
@@ -121,3 +122,4 @@ def clear_items():
     box.__init__(board)
     rock.__init__(board)
     skull.__init__(board)
+    water.__init__(board)

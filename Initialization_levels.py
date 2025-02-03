@@ -3,7 +3,7 @@ from items import test_board, board
 import Rules_and_blocks
 import items
 from ast import literal_eval
-from items import MegaItems, wall, rock, box, moris, board, flag, skull
+from items import MegaItems, wall, rock, box, moris, board, flag, skull, water
 
 
 def start_level(name: str):  # Открытие уровня из бд
@@ -153,14 +153,69 @@ def new_level(name: str, blocks: list):  # Создание нового уро�
 
 
 def add_new_level():  # Создание новго уровня
+    # new_level(
+    #     'level-1', [['flag', [3, 5], False], ['moris', [1, 1], False], ['wall', [3, 7], False],
+    #                 ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 1], True],
+    #                 ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 1], True],
+    #                 ['Rules_and_blocks.ActiveBlocksAction("you", board)', [7, 1], True],
+    #
+    #                 ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [5, 4], True],
+    #                 ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 4], True],
+    #                 ['Rules_and_blocks.ActiveBlocksAction("win", board)', [7, 4], True]]
+    #
+    # )
+
     new_level(
-        'level-3', [['flag', [3, 5], False], ['moris', [1, 1], False], ['box', [3, 7], False],
-                    ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [5, 1], True],
-                    ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 1], True],
-                    ['Rules_and_blocks.ActiveBlocksAction("you", board)', [7, 1], True],
+        'level-3', [
+            ['water', [6, 4], False], ['water', [7, 4], False], ['water', [8, 4], False], [
+                'water', [9, 4], False], ['water', [10, 4], False],
+            ['water', [6, 5], False], ['water', [7, 5], False], ['water', [8, 5], False], [
+                'water', [9, 5], False], ['water', [10, 5], False],
+            ['rock', [6, 3], False], ['rock', [7, 3], False], ['rock', [8, 3], False], [
+                'rock', [9, 3], False], ['rock', [10, 3], False],
+            ['rock', [6, 6], False], ['rock', [7, 6], False], ['rock', [8, 6], False], [
+                'rock', [9, 6], False], ['rock', [10, 6], False],
+            ['rock', [6, 0], False], ['rock', [10, 0], False],
+            ['rock', [6, 1], False], ['rock', [10, 1], False],
+            ['rock', [6, 2], False], ['rock', [10, 2], False],
+            ['rock', [6, 7], False], ['rock', [10, 7], False],
+            ['rock', [6, 8], False], ['rock', [10, 8], False],
+            ['rock', [6, 9], False], ['rock', [10, 9], False],
+            ['flag', [13, 4], False],
+            ['box', [2, 3], False], ['box', [4, 3], False],
+            ['Rules_and_blocks.ActiveBlocksObject("box", board)', [
+                3, 5], True],
+            ['Rules_and_blocks.ActiveBlocksIS(board)', [4, 6], True],
+            ['Rules_and_blocks.ActiveBlocksAction("push", board)', [
+                3, 7], True],
+            ['Rules_and_blocks.ActiveBlocksAction("win", board)', [
+                13, 5], True],
+            ['Rules_and_blocks.ActiveBlocksObject("rock", board)', [
+                7, 2], True],
+            ['Rules_and_blocks.ActiveBlocksIS(board)', [8, 2], True],
+            ['Rules_and_blocks.ActiveBlocksAction("stop", board)', [
+                9, 2], True],
+            ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [
+                0, 0], True],
+            ['Rules_and_blocks.ActiveBlocksIS(board)', [1, 0], True],
+            ['Rules_and_blocks.ActiveBlocksObject("water", board)', [
+                12, 8], True],
+            ['Rules_and_blocks.ActiveBlocksIS(board)', [13, 8], True],
+            ['Rules_and_blocks.ActiveBlocksAction("sink", board)', [
+                14, 8], True],
+            ['moris', [4, 5], False],
+            ['Rules_and_blocks.ActiveBlocksObject("moris", board)', [
+                12, 1], True],
+            ['Rules_and_blocks.ActiveBlocksIS(board)', [13, 1], True],
+            ['Rules_and_blocks.ActiveBlocksAction("you", board)', [
+                14, 1], True],
 
-                    ['Rules_and_blocks.ActiveBlocksObject("flag", board)', [5, 4], True],
-                    ['Rules_and_blocks.ActiveBlocksIS(board)', [6, 4], True],
-                    ['Rules_and_blocks.ActiveBlocksAction("win", board)', [7, 4], True]]
 
+
+
+        ]
     )
+
+
+if __name__ == "__main__":
+    add_new_level()

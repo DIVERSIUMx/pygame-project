@@ -1,6 +1,6 @@
 import pygame
 from tric import Item
-from items import MegaItems, wall, rock, box, board, moris, flag, skull, test_board
+from items import MegaItems, wall, rock, box, board, moris, flag, skull, test_board, water
 from sprites import ItemSprite, load_image
 
 pygame.init()
@@ -20,7 +20,8 @@ colors = {
     'weak': 'grey',
     'moris': 'gold',
     'you': 'pink',
-    'flag': 'gold'
+    'flag': 'gold',
+    'water': 'blue'
 }
 
 
@@ -76,7 +77,8 @@ class ActiveBlocksIS(ActiveBlocks):  # Класс - наследник, для �
         self.__class__.__name__ = 'IS'
 
 
-class ActiveBlocksObject(ActiveBlocks):  # Класс - наследник, для блоков текста -  предметов
+# Класс - наследник, для блоков текста -  предметов
+class ActiveBlocksObject(ActiveBlocks):
     def __init__(self, name, board):
         self.sprite = ItemSprite(
             name + "*", load_image("names", f"{name}.png")
@@ -85,7 +87,8 @@ class ActiveBlocksObject(ActiveBlocks):  # Класс - наследник, дл
         self.__class__.__name__ = 'OBJECT'
 
 
-class ActiveBlocksAction(ActiveBlocks):  # Класс - наследник, для блоков текста -  действиий
+# Класс - наследник, для блоков текста -  действиий
+class ActiveBlocksAction(ActiveBlocks):
     sprite = ItemSprite("ohno", load_image("action.png"))
 
     def __init__(self, name, board):
@@ -109,12 +112,13 @@ def new_rule(
                             x * board.cell_size + board.left,
                             y * board.cell_size + board.top
                         )  # Добавляет создания правила в историю ctrl+z
-                        cell[i] = globals()[f"{finish_name}"]  # Применяет новое правило на элемент класса в items
+                        # Применяет новое правило на элемент класса в items
+                        cell[i] = globals()[f"{finish_name}"]
                         sprite = cell[i].sprite.copy()
                         sprite.rect.x = x * board.cell_size + board.left
                         sprite.rect.y = y * board.cell_size + board.top
                         board.sprites[cell[i].sprite.filename, x * board.cell_size +
-                                                               board.left, y * board.cell_size + board.top] = sprite
+                                      board.left, y * board.cell_size + board.top] = sprite
                         board.history_items[-1][1].append((cell[i], x, y))
     # elif first_name == 'moris':
     #     flag_moris = False
@@ -132,7 +136,8 @@ def new_rule(
     else:  # Применяется во всех иных случаях
         # print(first_name, finish_name)
         exec(
-            compile(f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec')
+            compile(
+                f"globals()['{first_name}'].set_{finish_name}(True)", str(), 'exec')
         )  # Обращаемся к элементу класса в items и даем ему новые параметры
         # print(globals()[first_name].get_rules())
     if flag_moris:  # Если праивло не на мориса - добавление в список
@@ -154,12 +159,13 @@ def checking_for_rule_existence(board):
         if rules.count(element) >= 2:
             del ActiveRules[element]
         elif not (board[element[0][1]][element[0][0]] and board[element[1][1]][element[1][0]] and board[element[2][1]][
-            element[2][0]]):
+                element[2][0]]):
             del ActiveRules[element]
             if element[-1][-1] is not True:
                 exec(
                     compile(
-                        f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(), 'exec'
+                        f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(
+                        ), 'exec'
                     )
                 )  # отменяет применные праивла на элемент класса в items
         elif board[element[0][1]][element[0][0]][0].name != element[-1][0] \
@@ -171,13 +177,15 @@ def checking_for_rule_existence(board):
             #    ][0].name, element[-1][0], '\n',
             #    board[element[1][1]][element[1][0]][0].name, element[-1][1]
             # )
-            if element[-1][-1] is True:  # Очиста праивла obj is obj (ограничение для ошибок)
+            # Очиста праивла obj is obj (ограничение для ошибок)
+            if element[-1][-1] is True:
                 del ActiveRules[element]
                 continue
             del ActiveRules[element]
             exec(
                 compile(
-                    f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(), 'exec'
+                    f"globals()['{element[3][0]}'].set_{element[3][2]}(False)", str(
+                    ), 'exec'
                 )
             )  # отменяет применные праивла на элемент класса в items
         # изменение правил элемента в процессе
@@ -186,14 +194,16 @@ def checking_for_rule_existence(board):
 
 # Функция получает список всех элементов (аткивных блоков) сдвинутых за ход
 def search_for_rules(intereaction, board):
-    checking_for_rule_existence(board)  # Проверяем, что все правила действительны
+    # Проверяем, что все правила действительны
+    checking_for_rule_existence(board)
 
     for element in intereaction:
         # print(element)
-        if isinstance(element[0], ActiveBlocksAction):  # Проверяет на то, что блок текста являтся дейсвтием
+        # Проверяет на то, что блок текста являтся дейсвтием
+        if isinstance(element[0], ActiveBlocksAction):
             cord = x, y = element[1]
             if x >= 2:  # проверка новых правил по x
-                if board[y][x - 1] and board[y][x - 2]:
+                if board[y][x - 1] and board[y][x - 2] and board[y][x]:
                     if issubclass(board[y][x - 1][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y][x - 2][0].__class__,
                             ActiveBlocksObject
@@ -205,7 +215,7 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name
                         )  # Создание нового правила
             if y >= 2:  # проверка новых правил по y
-                if board[y - 1][x] and board[y - 2][x]:
+                if board[y - 1][x] and board[y - 2][x] and board[y][x]:
                     if issubclass(board[y - 1][x][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y - 2][x][0].__class__,
                             ActiveBlocksObject
@@ -217,11 +227,12 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name
                         )  # Создание нового правила
 
-        elif isinstance(element[0], ActiveBlocksIS):  # Проверяет на то, что блок текста являтся IS (это)
+        # Проверяет на то, что блок текста являтся IS (это)
+        elif isinstance(element[0], ActiveBlocksIS):
             cord = x, y = element[1]
             if 1 <= x < 15:  # проверка новых правил по x
 
-                if board[y][x - 1] and board[y][x + 1]:
+                if board[y][x - 1] and board[y][x + 1] and board[y][x]:
                     # print(
                     #    issubclass(board[y][x - 1][0].__class__, ActiveBlocksObject), issubclass(
                     #        board[y][x + 1][0].__class__, ActiveBlocksAction
@@ -249,7 +260,7 @@ def search_for_rules(intereaction, board):
                             finish_name=finish_name, object_object=True
                         )  # Создание нового правила
             if 1 <= y < 9:  # проверка новых правил по y
-                if board[y - 1][x] and board[y + 1][x]:
+                if board[y - 1][x] and board[y + 1][x] and board[y][x]:
                     # print(board[y - 1][x], board[y + 1][x])
                     if issubclass(board[y - 1][x][0].__class__, ActiveBlocksObject) and issubclass(
                             board[y + 1][x][0].__class__, ActiveBlocksAction
@@ -270,12 +281,13 @@ def search_for_rules(intereaction, board):
                             first_cord=(x, y - 1), first_name=first_name, is_cord=cord, finish_cord=(x, y + 1),
                             finish_name=finish_name, object_object=True
                         )  # Создание нового правила
-        elif isinstance(element[0], ActiveBlocksObject):  # Проверяет на то, что блок текста являтся объектом
+        # Проверяет на то, что блок текста являтся объектом
+        elif isinstance(element[0], ActiveBlocksObject):
             cord = x, y = element[1]
             # print('log Object')
             # проверка новых правил по x (блок объект находится справо)
             if x >= 2:  # проверка новых правил по x
-                if board[y][x - 1] and board[y][x - 2]:
+                if board[y][x - 1] and board[y][x - 2] and board[y][x]:
                     if issubclass(board[y][x - 1][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y][x - 2][0].__class__,
                             ActiveBlocksObject
@@ -288,7 +300,7 @@ def search_for_rules(intereaction, board):
                         )  # Создание нового правила
             # проверка новых правил по y (блок объект находится снизу)
             if y >= 2:  # проверка новых правил по y
-                if board[y - 1][x] and board[y - 2][x]:
+                if board[y - 1][x] and board[y - 2][x] and board[y][x]:
                     if issubclass(board[y - 1][x][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y - 2][x][0].__class__,
                             ActiveBlocksObject
@@ -302,7 +314,7 @@ def search_for_rules(intereaction, board):
 
             # проверка новых правил по x (блок объект находится слево)
             if x < 13:  # проверка новых правил по y
-                if board[y][x + 1] and board[y][x + 2]:
+                if board[y][x + 1] and board[y][x + 2] and board[y][x]:
                     if issubclass(board[y][x + 1][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y][x + 2][0].__class__,
                             ActiveBlocksAction
@@ -315,7 +327,7 @@ def search_for_rules(intereaction, board):
                         )  # Создание нового правила
             # проверка новых правил по y (блок объект находится сверху)
             if y < 7:  # проверка новых правил по y
-                if board[y + 1][x] and board[y + 2][x]:
+                if board[y + 1][x] and board[y + 2][x] and board[y][x]:
                     if issubclass(board[y + 1][x][0].__class__, ActiveBlocksIS) and issubclass(
                             board[y + 2][x][0].__class__,
                             ActiveBlocksAction

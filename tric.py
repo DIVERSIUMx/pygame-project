@@ -119,7 +119,7 @@ class MainBoard:
                 you_here = False
                 win_here = False
                 death_here = False
-                for item in self.new_board[y][x]:
+                for i, item in enumerate(self.new_board[y][x]):
                     if item not in exists:
                         exists.add(item)
                     else:

@@ -163,7 +163,6 @@ def main(level: str):
     undo_count = 0
     running = True
     BlockSprite((0, height), width)
-    test(board)
     board.generate_sprites()
     end_image = pygame.Surface(screen_size)
     end_image.blit(screen, (0, 0))
@@ -184,7 +183,6 @@ def main(level: str):
                     undo_count += 1
                 else:
                     if board.you_go(event.key):
-                        #  print("YOU WIN")
                         running = False
                         end_image.blit(screen, (0, 0))
         if not running:
