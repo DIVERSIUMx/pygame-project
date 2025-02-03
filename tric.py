@@ -24,7 +24,7 @@ class MainBoard:
     # получение размеров экрана для корректного отображения доски
     def get_screen_size(self):
         return self.width * self.cell_size + (
-                2 * self.left
+            2 * self.left
         ), self.height * self.cell_size + (2 * self.top)
 
     def render(self, surface):  # ренрер самой доски
@@ -296,12 +296,15 @@ class Item(object):
                 if item.stop and not item.push:
                     return False
                 elif item.push:
-                    item.try_step(
-                        new, (2 * x - x1, 2 * y - y1)
-                    )
-                    continue
+                    if item.try_step(
+                            new, (2 * x - x1, 2 * y - y1)):
+                        continue
+                    else:
+                        return False
             self.step(old, new)
             return True
+        else:
+            return False
 
     def step(self, old, new):  # Перемешение объекта
         self.board.history_items[-1][0].append((self, *old))
@@ -310,7 +313,7 @@ class Item(object):
         self.board.move_sprites.append(
             ((self.sprite.filename, new[0] * 80 + self.board.left, new[1] * 80
               + self.board.top), (
-                 self.sprite.filename, old[0] * 80 + self.board.left, old[1] * 80 + self.board.top))
+                self.sprite.filename, old[0] * 80 + self.board.left, old[1] * 80 + self.board.top))
         )
         from Rules_and_blocks import ActiveBlocks
 
