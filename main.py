@@ -72,6 +72,9 @@ def end_screen(end_img, time, move_count, undo_count):
             if check_counter.value == move_count:
                 state = 3
         elif state == 3:
+            check_counter.set_value(
+                move_count
+            )
             true_check_counter = ResultShowSprite(
                 pygame.Rect(200, height / 4 * 2 - 100, 500, 200), 5
             )
@@ -86,6 +89,9 @@ def end_screen(end_img, time, move_count, undo_count):
             if true_check_counter.value == move_count + undo_count:
                 state = 5
         elif state == 5:
+            true_check_counter.set_value(
+                move_count + undo_count
+            )
             time_counter = TimeCounterSprite(
                 pygame.Rect(200, height / 4 * 3 - 100, 500, 200)
             )
@@ -99,6 +105,9 @@ def end_screen(end_img, time, move_count, undo_count):
             if time_counter.value >= time:
                 state = 8
         elif state != 8:
+            time_counter.set_value(
+                time
+            )
             for sprite in end_screen_sprites.sprites():
                 sprite.kill()
             for sprite in item_sprites.sprites():
@@ -120,35 +129,6 @@ def end_screen(end_img, time, move_count, undo_count):
         end_screen_sprites.draw(screen)
         clock.tick(fps)
         pygame.display.flip()
-        # print(time)
-
-
-def test(self: MainBoard):
-    # В эту функцию пихать все для тестов
-    self.board[4][4] = [items.moris]
-    # self.rules[items.Moris].weak = False
-
-    self.board[6][5] = [items.flag]
-    self.board[4][5] = [items.skull]
-    self.board[5][5] = [items.box]
-    # self.rules[items.Box].weak = True
-
-    self.board[5][8] = [items.rock]
-    self.board[1][1] = [Rules_and_blocks.ActiveBlocksObject("flag", self)]
-    self.board[1][2] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[1][3] = [Rules_and_blocks.ActiveBlocksAction("win", self)]
-    self.board[2][8] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
-    self.board[2][9] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[3][10] = [Rules_and_blocks.ActiveBlocksAction("death", self)]
-    self.board[4][8] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
-    self.board[5][10] = [Rules_and_blocks.ActiveBlocksAction("stop", self)]
-    self.board[2][3] = [Rules_and_blocks.ActiveBlocksObject("moris", self)]
-    self.board[2][4] = [Rules_and_blocks.ActiveBlocksIS(self)]
-    self.board[3][5] = [Rules_and_blocks.ActiveBlocksObject("box", self)]
-    self.board[5][10] = [items.Water(self)]
-    # self.rules[items.Water].silk = True
-    # print(issubclass(items.Box(self).__class__, items.MegaItems))
-    # print(self.board)
 
 
 def main(level: str):
@@ -156,8 +136,6 @@ def main(level: str):
     fps = 60
     start_level(level)
     Rules_and_blocks.checking_for_rule_existence(board.board)
-    # print(board.board)
-
     time = 0
     undo_count = 0
     running = True
