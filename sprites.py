@@ -46,7 +46,7 @@ class TimeCounterSprite(pygame.sprite.Sprite):
             str(self.value // 60).rjust(
                 2, "0"
             ) + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255)
-            )
+        )
 
     def set_value(self, value):
         self.value = value
@@ -54,7 +54,7 @@ class TimeCounterSprite(pygame.sprite.Sprite):
             str(self.value // 60).rjust(
                 2, "0"
             ) + ":" + str(self.value % 60).rjust(2, "0"), 1, (255, 255, 255)
-            )
+        )
 
 
 class ResultShowSprite(pygame.sprite.Sprite):  # Спрайт отображения результата
@@ -109,9 +109,10 @@ class ItemSprite(pygame.sprite.Sprite):  # Спрайт объекта
             self.frames = tuple(
                 self.im.subsurface(x * 80, y * 80, 80, 80)
                 for x in range(colums) for y in range(rows)
-                )
+            )
             self.image = self.frames[0]
             self.rect = self.image.get_rect()
+        self.rect.x = -100
 
     def update(self):
         global FROZE
